@@ -53,6 +53,13 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void SFMLScreen::setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const float & scale)
+{
+    shader.setParameter("HmdWarpParam", K[0], K[1], K[2], K[3]);
+    shader.setParameter("LensCenter", lensCenter[0], lensCenter[1]);
+    shader.setParameter("Scale", scale);
+}
+
 void SFMLScreen::render(glm::mat4 & mvp)
 {
     sf::Shader::bind(&shader);

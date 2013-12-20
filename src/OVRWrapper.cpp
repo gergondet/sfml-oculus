@@ -17,6 +17,34 @@ inline std::ostream & operator<<(std::ostream & os, const OVR::Matrix4f & m)
     return os;
 }
 
+inline std::ostream & operator<<(std::ostream & os, const OVR::Util::Render::StereoEye & eye)
+{
+    switch(eye)
+    {
+        case OVR::Util::Render::StereoEye_Center:
+            os << "center eye";
+            break;
+        case OVR::Util::Render::StereoEye_Left:
+            os << "left eye";
+            break;
+        case OVR::Util::Render::StereoEye_Right:
+            os << "right eye";
+            break;
+    }
+    return os;
+}
+
+inline std::ostream & operator<<(std::ostream & os, const glm::mat4 & m)
+{
+    for(int i = 0; i < 4; ++i) {
+        for(int j = 0; j < 4; ++j) {
+            os << m[i][j] << ", ";
+        }
+        os << std::endl;
+    }
+    return os;
+}
+
 OVRWrapper::OVRWrapper(float width, float height)
 : manager(0), hmd(0), hmdInfo(), sensor(0), sConfig(), currentEye(), renderScale(0)
 {
@@ -96,6 +124,11 @@ glm::mat4 OVRWrapper::getViewAdjust()
 
 glm::mat4 OVRWrapper::getProjection()
 {
+    OVR::Matrix4f proj_in = currentEye.Projection.Transposed();
     glm::mat4 projection = glm::mat4(1.0);
+    for(size_t i = 0; i < 4; ++i) {
+    for(size_t j = 0; j < 4; ++j) {
+        projection[i][j] = proj_in.M[i][j];
+    } }
     return projection;
 }

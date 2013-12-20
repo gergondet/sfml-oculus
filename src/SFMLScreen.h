@@ -21,6 +21,8 @@ public:
 
     void init(float w, float h, float ww, float wh);
 
+    void setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const float & scale);
+
     void render(glm::mat4 & mvp);
 private:
     float width;
@@ -31,6 +33,8 @@ private:
     GLuint vbo_vertices;
     GLuint vbo_texcoords;
     GLuint ibo_elements;
+
+    /* Shader internals */
     GLhandleARB program;
     GLint attribute_coord3d;
     GLint attribute_texcoord;

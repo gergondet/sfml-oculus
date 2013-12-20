@@ -43,16 +43,35 @@ inline std::ostream & operator<<(std::ostream & os, const glm::mat4 & m)
     return os;
 }
 
-void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_screen, PLYMesh & box, glm::mat4& model_box, glm::mat4 & anim_box, glm::mat4 & projection, glm::mat4 & view, OVRWrapper & oculus, OVR::Util::Render::StereoEye eye)
+inline std::ostream & operator<<(std::ostream & os, const OVR::Util::Render::DistortionConfig & d)
+{
+    os << "K " << d.K[0] << ", " << d.K[1] << ", " << d.K[2] << ", " << d.K[3] << std::endl;
+    os << "Offset (X,Y): " << d.XCenterOffset << ", " << d.YCenterOffset << std::endl;
+    os << "Scale: " << d.Scale << std::endl;
+    return os;
+}
+
+void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_screen, PLYMesh & box, glm::mat4& model_box, glm::mat4 & anim_box, glm::mat4 & view, OVRWrapper & oculus, OVR::Util::Render::StereoEye eye)
 {
     oculus.setEye(eye);
     glm::mat4 viewAdjust = oculus.getViewAdjust();
+    glm::mat4 projection = oculus.getProjection();
+
+    const OVR::Util::Render::DistortionConfig * d = oculus.getDistortionConfig();
+    if(d)
+    {
+        glm::vec4 K(d->K[0], d->K[1], d->K[2], d->K[3]);
+        glm::vec2 lensCenter(d->XCenterOffset, d->YCenterOffset);
+        sfmlScreen.setDistortionParameters(K, lensCenter, d->Scale);
+    }
+
     glm::mat4 mvp_box = projection*viewAdjust*view*model_box*anim_box;
     glm::mat4 mvp_screen = viewAdjust*model_screen;
+
     app.clear();
     sfmlScreen.render(mvp_screen);
     glClear(GL_DEPTH_BUFFER_BIT);
-    box.render(mvp_box);
+//    box.render(mvp_box);
 }
 
 int main(int argc, char * argv[])
@@ -122,22 +141,15 @@ int main(int argc, char * argv[])
             }
         }
 
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-        glm::mat4 projection = glm::perspective(60.0f, 1.0f*(width)/height, 0.1f, 10.0f);
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
         static float angle = 0;
         glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
         angle += 90*anim_clock.getElapsedTime().asMicroseconds()/1e6;
         anim_clock.restart();
-        glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 2.));
-        if(render_for_oculus)
-        {
-            projection = glm::perspective(60.0f, 1.0f*(width/2)/height, 0.1f, 10.0f);
-        }
-        glm::mat4 mvp_box = projection*view*model_box*anim_box;
+        glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 0.75));
 
         glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0));
-        glm::mat4 mvp_screen = model_screen;
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
@@ -163,6 +175,9 @@ int main(int argc, char * argv[])
 
         if(!render_for_oculus)
         {
+            glm::mat4 projection = glm::perspective(60.0f, 1.0f*(width)/height, 0.1f, 10.0f);
+            glm::mat4 mvp_box = projection*view*model_box*anim_box;
+            glm::mat4 mvp_screen = model_screen;
             sfmlScreen.render(mvp_screen);
             glClear(GL_DEPTH_BUFFER_BIT);
             box.render(mvp_box);
@@ -171,11 +186,11 @@ int main(int argc, char * argv[])
         {
             /* Render left eye */
             {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, projection, view, oculus, OVR::Util::Render::StereoEye_Left);
+                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Left);
             }
             /* Render right eye */
             {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, projection, view, oculus, OVR::Util::Render::StereoEye_Right);
+                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Right);
             }
         }
 
