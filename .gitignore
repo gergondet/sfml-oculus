@@ -1,0 +1,16 @@
+# vim swap files and unwanted files
+*.swp
+gui/*
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
