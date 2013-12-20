@@ -6,6 +6,17 @@
 
 #include <iostream>
 
+inline std::ostream & operator<<(std::ostream & os, const OVR::Matrix4f & m)
+{
+    for(int i = 0; i < 4; ++i) {
+        for(int j = 0; j < 4; ++j) {
+            os << m.M[i][j] << ", ";
+        }
+        os << std::endl;
+    }
+    return os;
+}
+
 OVRWrapper::OVRWrapper(float width, float height)
 : manager(0), hmd(0), hmdInfo(), sensor(0), sConfig(), currentEye(), renderScale(0)
 {
@@ -52,7 +63,6 @@ OVRWrapper::OVRWrapper(float width, float height)
     }
     sConfig.SetFullViewport(OVR::Util::Render::Viewport(0,0, width, height));
     sConfig.SetStereoMode(OVR::Util::Render::Stereo_LeftRight_Multipass);
-    sConfig.SetHMDInfo(hmdInfo);
     sConfig.SetDistortionFitPointVP(-1.0f, 0.0f);
     renderScale = sConfig.GetDistortionScale();
 }
