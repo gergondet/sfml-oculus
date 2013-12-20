@@ -62,11 +62,18 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
     {
         glm::vec4 K(d->K[0], d->K[1], d->K[2], d->K[3]);
         glm::vec2 lensCenter(d->XCenterOffset, d->YCenterOffset);
-        sfmlScreen.setDistortionParameters(K, lensCenter, d->Scale);
+        float scaleFactor = 1/(d->Scale);
+        float as = (float)(640) / (float)(800);
+//        glm::vec2 scale(scaleFactor/2, scaleFactor*as);
+        glm::vec2 scale(4*0.173444, 4*0.27751);
+        //glm::vec2 scaleInv(4/2, 2.5/2);
+        glm::vec2 scaleInv(1, 1/as);
+        sfmlScreen.setDistortionParameters(K, lensCenter, scale, scaleInv);
+        box.setDistortionParameters(K, lensCenter, d->Scale);
     }
 
     glm::mat4 mvp_box = projection*viewAdjust*view*model_box*anim_box;
-    glm::mat4 mvp_screen = viewAdjust*model_screen;
+    glm::mat4 mvp_screen = projection*viewAdjust*view*model_screen;
 
     app.clear();
     sfmlScreen.render(mvp_screen);
@@ -122,10 +129,14 @@ int main(int argc, char * argv[])
     else
     {
         sfmlScreen.init(width/2, 480, width, height);
+        sfmlScreen.setWarpTexture(false);
     }
 
     PLYMesh box;
     box.loadFromFile("models/can.ply");
+
+    sf::Texture bgTexture; bgTexture.loadFromFile("testBG.JPG");
+    sf::Sprite bgSprite(bgTexture);
 
     bool quit = false;
     unsigned int frameC = 0;
@@ -149,11 +160,12 @@ int main(int argc, char * argv[])
         anim_clock.restart();
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 0.75));
 
-        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0));
+        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.2));
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
         sfmlScreen.clear(sf::Color::White);
+        sfmlScreen.draw(bgSprite);
         sf::RectangleShape border(sf::Vector2f(sfmlScreen.getSize().x - 10, sfmlScreen.getSize().y - 10));
         border.setPosition(5,5);
         border.setFillColor(sf::Color(255,255,255,0));
@@ -177,10 +189,10 @@ int main(int argc, char * argv[])
         {
             glm::mat4 projection = glm::perspective(60.0f, 1.0f*(width)/height, 0.1f, 10.0f);
             glm::mat4 mvp_box = projection*view*model_box*anim_box;
-            glm::mat4 mvp_screen = model_screen;
+            glm::mat4 mvp_screen = projection*view*model_screen;
             sfmlScreen.render(mvp_screen);
             glClear(GL_DEPTH_BUFFER_BIT);
-            box.render(mvp_box);
+//            box.render(mvp_box);
         }
         else
         {
