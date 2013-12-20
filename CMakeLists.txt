@@ -14,7 +14,7 @@ src/main.cpp
 )
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ovr sfml-graphics sfml-window sfml-system GL boost_filesystem)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem)
 
 SET(FONTS
 ${CMAKE_SOURCE_DIR}/fonts/arial.ttf

@@ -32,6 +32,7 @@ private:
     OVR::SensorDevice * sensor;
     OVR::Util::Render::StereoConfig sConfig;
     OVR::Util::Render::StereoEyeParams currentEye;
+    float renderScale;
 };
 
 #endif

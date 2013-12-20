@@ -130,9 +130,6 @@ int main(int argc, char * argv[])
             /* Render left eye */
             {
                 oculus.setEye(OVR::Util::Render::StereoEye_Left);
-                glViewport(0, 0, width/2, height);
-                glEnable(GL_SCISSOR_TEST);
-                glScissor(0, 0, width/2, height);
                 app.clear();
                 sfmlScreen.render(mvp_screen);
                 glClear(GL_DEPTH_BUFFER_BIT);
@@ -141,9 +138,6 @@ int main(int argc, char * argv[])
             /* Render right eye */
             {
                 oculus.setEye(OVR::Util::Render::StereoEye_Right);
-                glViewport(width/2, 0, width/2, height);
-                glEnable(GL_SCISSOR_TEST);
-                glScissor(width/2, 0, width/2, height);
                 app.clear();
                 sfmlScreen.render(mvp_screen);
                 glClear(GL_DEPTH_BUFFER_BIT);
