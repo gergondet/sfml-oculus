@@ -18,6 +18,11 @@
 int main(int argc, char * argv[])
 {
     bool render_for_oculus = true;
+    if(argc > 1)
+    {
+        std::stringstream ss;
+        ss << argv[1]; ss >> render_for_oculus;
+    }
     unsigned int width = 1280; unsigned int height = 800;
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 32;
@@ -60,14 +65,7 @@ int main(int argc, char * argv[])
     }
 
     PLYMesh box;
-    if(argc > 1)
-    {
-        box.loadFromFile(argv[1]);
-    }
-    else
-    {
-        box.loadFromFile("models/can.ply");
-    }
+    box.loadFromFile("models/can.ply");
 
     bool quit = false;
     unsigned int frameC = 0;
@@ -120,7 +118,6 @@ int main(int argc, char * argv[])
 
         if(!render_for_oculus)
         {
-            oculus.setEye(OVR::Util::Render::StereoEye_Center);
             sfmlScreen.render(mvp_screen);
             glClear(GL_DEPTH_BUFFER_BIT);
             box.render(mvp_box);
