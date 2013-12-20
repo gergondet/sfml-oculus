@@ -22,8 +22,13 @@ int main(int argc, char * argv[])
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 32;
     sf::RenderWindow app(sf::VideoMode(width, height), "OpenGL 2.0", sf::Style::Close, contextSettings);
-    width = app.getSize().x; height = app.getSize().y;
-    std::cout << "Real size " << width << " " << height << std::endl;
+    if(app.getSize().x != width || app.getSize().y != height)
+    {
+        std::cerr << "[Warning] Requested " << width << "x" << height <<  " window." << std::endl;
+        width = app.getSize().x; height = app.getSize().y;
+        std::cerr << "[Warning] Got " << width << "x" << height <<  " window." << std::endl;
+        std::cerr << "[Warning] Continue as if nothing happened but be aware of that in case of weird behaviours" << std::endl;
+    }
     app.setActive();
 //    app.setVerticalSyncEnabled(true);
 
@@ -35,7 +40,7 @@ int main(int argc, char * argv[])
     sf::Clock clock;
 
     sf::Font font;
-    font.loadFromFile("arial.ttf");
+    font.loadFromFile("fonts/arial.ttf");
 
     sf::Text text;
     text.setString("FPS: 0");
@@ -61,7 +66,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        box.loadFromFile("can.ply");
+        box.loadFromFile("models/can.ply");
     }
 
     bool quit = false;

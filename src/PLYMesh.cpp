@@ -4,14 +4,18 @@
 #include <fstream>
 #include <sstream>
 
+#include <boost/filesystem.hpp>
+namespace bfs = boost::filesystem;
+
 PLYMesh::PLYMesh()
 : vertices(0), normals(0), faces(0), triangle_faces(0), quad_faces(0), textures(0), passes(0)
 {
-    shader.loadFromFile("ply_shader.vert", "ply_shader.frag");
+    shader.loadFromFile("shaders/ply_shader.vert", "shaders/ply_shader.frag");
 }
 
 void PLYMesh::loadFromFile(const std::string & ply_model)
 {
+    bfs::path ply_path(ply_model);
     std::ifstream in(ply_model.c_str(), std::ios::in);
     unsigned int vertex_count = 0;
     unsigned int face_count = 0;
@@ -44,8 +48,9 @@ void PLYMesh::loadFromFile(const std::string & ply_model)
         {
             std::string texture;
             ss >> texture;
+            bfs::path texture_path = ply_path.parent_path() / texture;
             sf::Texture * text = new sf::Texture();
-            text->loadFromFile(texture.c_str());
+            text->loadFromFile(texture_path.string().c_str());
             textures.push_back(text);
         }
         else if(tmp == "end_header")

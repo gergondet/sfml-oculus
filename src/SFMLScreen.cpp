@@ -12,7 +12,7 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     width = w; height = h; wwidth = ww; wheight = wh;
     create(width, height);
 
-    shader.loadFromFile("sfmlscreen_shader.vert", "sfmlscreen_shader.frag");
+    shader.loadFromFile("shaders/sfmlscreen_shader.vert", "shaders/sfmlscreen_shader.frag");
 
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
