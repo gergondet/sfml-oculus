@@ -23,7 +23,7 @@ public:
 
     void beginRendering();
 
-    void endRendering(float vp_w = 0);
+    void endRendering(glm::mat4 view, float vp_w = 0);
 
     void setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const glm::vec2 & scale, const glm::vec2 & scaleInv);
 private:
@@ -40,6 +40,7 @@ private:
     GLhandleARB program;
     GLuint attribute_coord2d;
     GLuint uniform_fbo_texture;
+    GLuint uniform_view;
 };
 
 #endif

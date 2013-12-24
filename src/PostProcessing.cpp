@@ -10,6 +10,7 @@ PostProcessing::PostProcessing(float width, float height) : width(width), height
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     attribute_coord2d = glGetAttribLocation(program, "coord2d");
     uniform_fbo_texture = glGetUniformLocation(program, "fbo_texture");
+    uniform_view = glGetUniformLocation(program, "view");
     sf::Shader::bind(0);
 
     /* Create back-buffer, used for post-processing */
@@ -67,7 +68,7 @@ void PostProcessing::beginRendering()
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
-void PostProcessing::endRendering(float vp_w)
+void PostProcessing::endRendering(glm::mat4 view, float vp_w)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
  
@@ -75,6 +76,7 @@ void PostProcessing::endRendering(float vp_w)
     glDisable(GL_SCISSOR_TEST);
 
     sf::Shader::bind(&shader);
+    glUniformMatrix4fv(uniform_view, 1, GL_FALSE, glm::value_ptr(view));
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
     glUniform1i(uniform_fbo_texture, /*GL_TEXTURE*/0);
     glEnableVertexAttribArray(attribute_coord2d);

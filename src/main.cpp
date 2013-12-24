@@ -81,7 +81,7 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
     sfmlScreen.render(mvp_screen);
     glClear(GL_DEPTH_BUFFER_BIT);
     box.render(mvp_box);
-    postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? app.getSize().x/2 : 0);
+    postproc.endRendering(projection*viewAdjust*view, eye == OVR::Util::Render::StereoEye_Right ? app.getSize().x/2 : 0);
 }
 
 int main(int argc, char * argv[])
@@ -173,7 +173,7 @@ int main(int argc, char * argv[])
         anim_clock.restart();
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 0.75));
 
-        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.2));
+        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.45));
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
@@ -207,7 +207,8 @@ int main(int argc, char * argv[])
             sfmlScreen.render(mvp_screen);
             glClear(GL_DEPTH_BUFFER_BIT);
             box.render(mvp_box);
-            postproc.endRendering();
+            glm::mat4 viewAdjust(1.0);
+            postproc.endRendering(viewAdjust);
         }
         else
         {
