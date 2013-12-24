@@ -32,8 +32,6 @@ public:
 
     void loadFromFile(const std::string & ply_model);
 
-    void setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const float & scale);
-
     void render(glm::mat4 & mvp);
 private:
     std::vector<glm::vec3> vertices;

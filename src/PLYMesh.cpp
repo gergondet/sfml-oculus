@@ -13,13 +13,6 @@ PLYMesh::PLYMesh()
     shader.loadFromFile("shaders/ply_shader.vert", "shaders/ply_shader.frag");
 }
 
-void PLYMesh::setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const float & scale)
-{
-    shader.setParameter("HmdWarpParam", K[0], K[1], K[2], K[3]);
-    shader.setParameter("LensCenter", lensCenter[0], lensCenter[1]);
-    shader.setParameter("Scale", scale);
-}
-
 void PLYMesh::loadFromFile(const std::string & ply_model)
 {
     bfs::path ply_path(ply_model);

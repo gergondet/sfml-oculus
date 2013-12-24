@@ -10,6 +10,7 @@ SET(${PROJECT_NAME}_SRC
 src/OVRWrapper.cpp
 src/SFMLScreen.cpp
 src/PLYMesh.cpp
+src/PostProcessing.cpp
 src/main.cpp
 )
 
@@ -36,6 +37,8 @@ ${CMAKE_SOURCE_DIR}/shaders/ply_shader.frag
 ${CMAKE_SOURCE_DIR}/shaders/ply_shader.vert
 ${CMAKE_SOURCE_DIR}/shaders/sfmlscreen_shader.frag
 ${CMAKE_SOURCE_DIR}/shaders/sfmlscreen_shader.vert
+${CMAKE_SOURCE_DIR}/shaders/postproc.frag
+${CMAKE_SOURCE_DIR}/shaders/postproc.vert
 )
 
 

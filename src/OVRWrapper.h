@@ -27,6 +27,8 @@ public:
     glm::mat4 getProjection();
 
     const OVR::Util::Render::DistortionConfig * getDistortionConfig() { return currentEye.pDistortion; }
+
+    float getRenderScale() { return renderScale; }
 private:
     OVR::DeviceManager * manager;
     OVR::HMDDevice * hmd;

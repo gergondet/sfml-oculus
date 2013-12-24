@@ -14,6 +14,7 @@
 #include "OVRWrapper.h"
 #include "PLYMesh.h"
 #include "SFMLScreen.h"
+#include "PostProcessing.h"
 
 inline std::ostream & operator<<(std::ostream & os, const OVR::Util::Render::StereoEye & eye)
 {
@@ -51,8 +52,9 @@ inline std::ostream & operator<<(std::ostream & os, const OVR::Util::Render::Dis
     return os;
 }
 
-void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_screen, PLYMesh & box, glm::mat4& model_box, glm::mat4 & anim_box, glm::mat4 & view, OVRWrapper & oculus, OVR::Util::Render::StereoEye eye)
+void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_screen, PLYMesh & box, glm::mat4& model_box, glm::mat4 & anim_box, glm::mat4 & view, OVRWrapper & oculus, OVR::Util::Render::StereoEye eye, PostProcessing & postproc)
 {
+    postproc.beginRendering();
     oculus.setEye(eye);
     glm::mat4 viewAdjust = oculus.getViewAdjust();
     glm::mat4 projection = oculus.getProjection();
@@ -65,20 +67,21 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
         float scaleFactor = 1/(d->Scale);
         float as = (float)(640) / (float)(800);
 //        glm::vec2 scale(scaleFactor/2, scaleFactor*as);
-        glm::vec2 scale(4*0.173444, 4*0.27751);
-        //glm::vec2 scaleInv(4/2, 2.5/2);
-        glm::vec2 scaleInv(1, 1/as);
-        sfmlScreen.setDistortionParameters(K, lensCenter, scale, scaleInv);
-        box.setDistortionParameters(K, lensCenter, d->Scale);
+        glm::vec2 scale(0.14, 0.23);
+        glm::vec2 scaleInv(4, 2.5);
+        postproc.setDistortionParameters(K, lensCenter, scale, scaleInv);
+//        sfmlScreen.setDistortionParameters(K, lensCenter, scale, scaleInv);
+//        box.setDistortionParameters(K, lensCenter, d->Scale);
     }
 
     glm::mat4 mvp_box = projection*viewAdjust*view*model_box*anim_box;
     glm::mat4 mvp_screen = projection*viewAdjust*view*model_screen;
 
-    app.clear();
+//    app.clear();
     sfmlScreen.render(mvp_screen);
     glClear(GL_DEPTH_BUFFER_BIT);
-//    box.render(mvp_box);
+    box.render(mvp_box);
+    postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? app.getSize().x/2 : 0);
 }
 
 int main(int argc, char * argv[])
@@ -104,6 +107,17 @@ int main(int argc, char * argv[])
 //    app.setVerticalSyncEnabled(true);
 
     OVRWrapper oculus(width, height);
+    std::cout << "Oculus renderScale " << oculus.getRenderScale() << std::endl;
+
+    PostProcessing postproc(render_for_oculus? width/2 : width, height);
+    if(!render_for_oculus)
+    {
+        glm::vec4 K(1, 0.22, 0.24, 0);
+        glm::vec2 lensCenter(0.151976, 0);
+        glm::vec2 scale(0.14, 0.23);
+        glm::vec2 scaleInv(4, 2.5);
+        postproc.setDistortionParameters(K, lensCenter, scale, scaleInv);
+    }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -129,7 +143,6 @@ int main(int argc, char * argv[])
     else
     {
         sfmlScreen.init(width/2, 480, width, height);
-        sfmlScreen.setWarpTexture(false);
     }
 
     PLYMesh box;
@@ -187,22 +200,24 @@ int main(int argc, char * argv[])
 
         if(!render_for_oculus)
         {
+            postproc.beginRendering();
             glm::mat4 projection = glm::perspective(60.0f, 1.0f*(width)/height, 0.1f, 10.0f);
             glm::mat4 mvp_box = projection*view*model_box*anim_box;
             glm::mat4 mvp_screen = projection*view*model_screen;
             sfmlScreen.render(mvp_screen);
             glClear(GL_DEPTH_BUFFER_BIT);
-//            box.render(mvp_box);
+            box.render(mvp_box);
+            postproc.endRendering();
         }
         else
         {
             /* Render left eye */
             {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Left);
+                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Left, postproc);
             }
             /* Render right eye */
             {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Right);
+                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Right, postproc);
             }
         }
 

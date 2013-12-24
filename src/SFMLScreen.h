@@ -21,10 +21,6 @@ public:
 
     void init(float w, float h, float ww, float wh);
 
-    void setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const glm::vec2 & scale, const glm::vec2 & scaleInv);
-
-    void setWarpTexture(bool warpTexture);
-
     void render(glm::mat4 & mvp);
 private:
     float width;

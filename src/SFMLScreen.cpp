@@ -53,20 +53,6 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void SFMLScreen::setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const glm::vec2 & scale, const glm::vec2 & scaleInv)
-{
-    shader.setParameter("HmdWarpParam", K[0], K[1], K[2], K[3]);
-    shader.setParameter("LensCenter", lensCenter[0], lensCenter[1]);
-    shader.setParameter("Scale", scale[0], scale[1]);
-    shader.setParameter("ScaleInv", scaleInv[0], scaleInv[1]);
-}
-
-void SFMLScreen::setWarpTexture(bool warpTexture)
-{
-    GLint uniform_useTexture = glGetUniformLocation(program, "warpTexture");
-    glUniform1i(uniform_useTexture, warpTexture?1:0);
-}
-
 void SFMLScreen::render(glm::mat4 & mvp)
 {
     sf::Shader::bind(&shader);
