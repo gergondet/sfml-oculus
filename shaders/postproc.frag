@@ -7,7 +7,7 @@ uniform vec4 HmdWarpParam;
 uniform vec2 Scale;
 uniform vec2 ScaleInv;
 
-uniform bool warpTexture=false;
+uniform bool warpTexture=true;
 
 vec2 hmdWarp(vec2 in01)
 {
@@ -22,7 +22,14 @@ void main(void) {
   if(warpTexture)
   {
     vec2 tc = hmdWarp(f_texcoord);
-    gl_FragColor = vec4(texture2D(fbo_texture, tc).xyz, 1.0);
+    if(!all(equal(clamp(tc, vec2(0,0), vec2(1,1)), tc)))
+    {
+        gl_FragColor = vec4(0);
+    }
+    else
+    {
+        gl_FragColor = texture2D(fbo_texture, tc);
+    }
   }
   else
   {

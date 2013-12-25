@@ -66,18 +66,16 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
         glm::vec2 lensCenter(d->XCenterOffset, d->YCenterOffset);
         float scaleFactor = 1/(d->Scale);
         float as = (float)(640) / (float)(800);
-//        glm::vec2 scale(scaleFactor/2, scaleFactor*as);
-        glm::vec2 scale(0.14, 0.23);
-        glm::vec2 scaleInv(4, 2.5);
+        float w = 0.5;
+        float h = 1;
+        glm::vec2 scale(w*scaleFactor, h*scaleFactor*as);
+        glm::vec2 scaleInv(1/w, (1/h)/as);
         postproc.setDistortionParameters(K, lensCenter, scale, scaleInv);
-//        sfmlScreen.setDistortionParameters(K, lensCenter, scale, scaleInv);
-//        box.setDistortionParameters(K, lensCenter, d->Scale);
     }
 
     glm::mat4 mvp_box = projection*viewAdjust*view*model_box*anim_box;
     glm::mat4 mvp_screen = projection*viewAdjust*view*model_screen;
 
-//    app.clear();
     sfmlScreen.render(mvp_screen);
     glClear(GL_DEPTH_BUFFER_BIT);
     box.render(mvp_box);
@@ -173,7 +171,7 @@ int main(int argc, char * argv[])
         anim_clock.restart();
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 0.75));
 
-        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.45));
+        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.6));
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
