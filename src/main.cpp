@@ -146,6 +146,9 @@ int main(int argc, char * argv[])
     sf::Sprite bgSprite(bgTexture);
     bgSprite.setScale(oculus.getRenderScale(), oculus.getRenderScale());
 
+    glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1.4));
+    float screen_z = -0.5;
+
     bool quit = false;
     unsigned int frameC = 0;
     while(!quit)
@@ -158,6 +161,16 @@ int main(int argc, char * argv[])
             {
                 quit = true;
             }
+            if(event.type == sf::Event::Closed ||
+                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up ))
+            {
+                model_screen = glm::translate(model_screen, glm::vec3(0,0,-0.1));
+            }
+            if(event.type == sf::Event::Closed ||
+                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down ))
+            {
+                model_screen = glm::translate(model_screen, glm::vec3(0,0,0.1));
+            }
         }
 
         glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
@@ -168,7 +181,6 @@ int main(int argc, char * argv[])
         anim_clock.restart();
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.25, 0.5));
 
-        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-0.5));
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
