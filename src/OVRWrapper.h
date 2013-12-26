@@ -14,7 +14,7 @@
 class OVRWrapper : public boost::noncopyable
 {
 public:
-    OVRWrapper(float width, float height);
+    OVRWrapper(float width, float height, bool enable_scaling = true);
 
     ~OVRWrapper();
 

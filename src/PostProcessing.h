@@ -17,18 +17,22 @@
 class PostProcessing : public boost::noncopyable
 {
 public:
-    PostProcessing(float width, float height);
+    PostProcessing(float width, float height, float windowWidth, float windowHeight);
 
     ~PostProcessing();
 
     void beginRendering();
 
-    void endRendering(glm::mat4 view, float vp_w = 0);
+    void endRendering(float vp_w);
 
     void setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const glm::vec2 & scale, const glm::vec2 & scaleInv);
+
+    void warpTexture(bool in);
 private:
     float width;
     float height;
+    float windowWidth;
+    float windowHeight;
     /* Framebuffer internal data */
     GLuint fbo;
     GLuint fbo_texture;

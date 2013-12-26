@@ -7,7 +7,7 @@ uniform vec4 HmdWarpParam;
 uniform vec2 Scale;
 uniform vec2 ScaleInv;
 
-uniform bool warpTexture=true;
+uniform bool warpTexture;
 
 vec2 hmdWarp(vec2 in01)
 {

@@ -63,7 +63,7 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
     if(d)
     {
         glm::vec4 K(d->K[0], d->K[1], d->K[2], d->K[3]);
-        glm::vec2 lensCenter(d->XCenterOffset, d->YCenterOffset);
+        glm::vec2 lensCenter(eye == OVR::Util::Render::StereoEye_Left ? 0.5*d->XCenterOffset : -0.5*(d->XCenterOffset), d->YCenterOffset);
         float scaleFactor = 1/(d->Scale);
         float as = (float)(640) / (float)(800);
         float w = 0.5;
@@ -76,19 +76,20 @@ void render(sf::RenderWindow & app, SFMLScreen & sfmlScreen, glm::mat4 & model_s
     glm::mat4 mvp_box = projection*viewAdjust*view*model_box*anim_box;
     glm::mat4 mvp_screen = projection*viewAdjust*view*model_screen;
 
+    app.clear();
     sfmlScreen.render(mvp_screen);
     glClear(GL_DEPTH_BUFFER_BIT);
     box.render(mvp_box);
-    postproc.endRendering(projection*viewAdjust*view, eye == OVR::Util::Render::StereoEye_Right ? app.getSize().x/2 : 0);
+    postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? app.getSize().x/2 : 0);
 }
 
 int main(int argc, char * argv[])
 {
-    bool render_for_oculus = true;
+    bool warp_texture = true;
     if(argc > 1)
     {
         std::stringstream ss;
-        ss << argv[1]; ss >> render_for_oculus;
+        ss << argv[1]; ss >> warp_texture;
     }
     unsigned int width = 1280; unsigned int height = 800;
     sf::ContextSettings contextSettings;
@@ -106,16 +107,18 @@ int main(int argc, char * argv[])
 
     OVRWrapper oculus(width, height);
     std::cout << "Oculus renderScale " << oculus.getRenderScale() << std::endl;
+    float renderWidth = width;
+    float renderHeight = height;
+    float sfmlScreenHeight = 480;
+    renderWidth = ceil(oculus.getRenderScale()*width);
+    renderHeight = ceil(oculus.getRenderScale()*height);
+    sfmlScreenHeight = oculus.getRenderScale()*sfmlScreenHeight;
+    std::cout << "Render w/h " << renderWidth << " " << renderHeight << std::endl;
 
-    PostProcessing postproc(render_for_oculus? width/2 : width, height);
-    if(!render_for_oculus)
-    {
-        glm::vec4 K(1, 0.22, 0.24, 0);
-        glm::vec2 lensCenter(0.151976, 0);
-        glm::vec2 scale(0.14, 0.23);
-        glm::vec2 scaleInv(4, 2.5);
-        postproc.setDistortionParameters(K, lensCenter, scale, scaleInv);
-    }
+    PostProcessing postproc_left(renderWidth/2, renderHeight, width, height);
+    postproc_left.warpTexture(warp_texture);
+    PostProcessing postproc_right(renderWidth/2, renderHeight, width, height);
+    postproc_right.warpTexture(warp_texture);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
@@ -130,24 +133,18 @@ int main(int argc, char * argv[])
     text.setString("FPS: 0");
     text.setFont(font);
     text.setPosition(10,10);
-    text.setCharacterSize(24);
+    text.setCharacterSize(40);
     text.setColor(sf::Color::Red);
 
     SFMLScreen sfmlScreen;
-    if(render_for_oculus)
-    {
-        sfmlScreen.init(width/2, 480, width/2, height);
-    }
-    else
-    {
-        sfmlScreen.init(width/2, 480, width, height);
-    }
+    sfmlScreen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
 
     PLYMesh box;
     box.loadFromFile("models/can.ply");
 
     sf::Texture bgTexture; bgTexture.loadFromFile("testBG.JPG");
     sf::Sprite bgSprite(bgTexture);
+    bgSprite.setScale(oculus.getRenderScale(), oculus.getRenderScale());
 
     bool quit = false;
     unsigned int frameC = 0;
@@ -169,9 +166,9 @@ int main(int argc, char * argv[])
         glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
         angle += 90*anim_clock.getElapsedTime().asMicroseconds()/1e6;
         anim_clock.restart();
-        glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.0, 0.75));
+        glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.25, 0.5));
 
-        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,0.6));
+        glm::mat4 model_screen = glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-0.5));
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
@@ -196,28 +193,13 @@ int main(int argc, char * argv[])
         app.clear();
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        if(!render_for_oculus)
+        /* Render left eye */
         {
-            postproc.beginRendering();
-            glm::mat4 projection = glm::perspective(60.0f, 1.0f*(width)/height, 0.1f, 10.0f);
-            glm::mat4 mvp_box = projection*view*model_box*anim_box;
-            glm::mat4 mvp_screen = projection*view*model_screen;
-            sfmlScreen.render(mvp_screen);
-            glClear(GL_DEPTH_BUFFER_BIT);
-            box.render(mvp_box);
-            glm::mat4 viewAdjust(1.0);
-            postproc.endRendering(viewAdjust);
+            render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Left, postproc_left);
         }
-        else
+        /* Render right eye */
         {
-            /* Render left eye */
-            {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Left, postproc);
-            }
-            /* Render right eye */
-            {
-                render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Right, postproc);
-            }
+            render(app, sfmlScreen, model_screen, box, model_box, anim_box, view, oculus, OVR::Util::Render::StereoEye_Right, postproc_right);
         }
 
         app.display();

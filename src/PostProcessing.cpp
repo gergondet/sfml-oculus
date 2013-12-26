@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-PostProcessing::PostProcessing(float width, float height) : width(width), height(height)
+PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight) 
+: width(width), height(height), windowWidth(winWidth), windowHeight(winHeight)
 {
     std::cout << "Postproc created  " << width << " " << height << std::endl;
     shader.loadFromFile("shaders/postproc.vert", "shaders/postproc.frag");
@@ -20,8 +21,8 @@ PostProcessing::PostProcessing(float width, float height) : width(width), height
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
    
@@ -66,17 +67,19 @@ PostProcessing::~PostProcessing()
 void PostProcessing::beginRendering()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glViewport(0, 0, width, height);
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(0, 0, width, height);
 }
 
-void PostProcessing::endRendering(glm::mat4 view, float vp_w)
+void PostProcessing::endRendering(float vp_w)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
  
-    glViewport(vp_w, 0, width, height);
     glDisable(GL_SCISSOR_TEST);
+    glViewport(vp_w, 0, windowWidth/2, windowHeight);
 
     sf::Shader::bind(&shader);
-    glUniformMatrix4fv(uniform_view, 1, GL_FALSE, glm::value_ptr(view));
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
     glUniform1i(uniform_fbo_texture, /*GL_TEXTURE*/0);
     glEnableVertexAttribArray(attribute_coord2d);
@@ -103,3 +106,9 @@ void PostProcessing::setDistortionParameters(const glm::vec4 & K, const glm::vec
     shader.setParameter("Scale", scale[0], scale[1]);
     shader.setParameter("ScaleInv", scaleInv[0], scaleInv[1]);
 }
+
+void PostProcessing::warpTexture(bool in)
+{
+    shader.setParameter("warpTexture", in);
+}
+

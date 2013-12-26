@@ -45,7 +45,7 @@ inline std::ostream & operator<<(std::ostream & os, const glm::mat4 & m)
     return os;
 }
 
-OVRWrapper::OVRWrapper(float width, float height)
+OVRWrapper::OVRWrapper(float width, float height, bool enable_scaling)
 : manager(0), hmd(0), hmdInfo(), sensor(0), sConfig(), currentEye(), renderScale(0)
 {
     OVR::System::Init(OVR::Log::ConfigureDefaultLog(OVR::LogMask_All));
@@ -92,7 +92,7 @@ OVRWrapper::OVRWrapper(float width, float height)
     sConfig.SetFullViewport(OVR::Util::Render::Viewport(0,0, width, height));
     sConfig.SetStereoMode(OVR::Util::Render::Stereo_LeftRight_Multipass);
     sConfig.SetDistortionFitPointVP(-1.0f, 0.0f);
-    renderScale = sConfig.GetDistortionScale();
+    renderScale = enable_scaling ? sConfig.GetDistortionScale() : 1;
 }
 
 OVRWrapper::~OVRWrapper()
@@ -106,10 +106,11 @@ OVRWrapper::~OVRWrapper()
 void OVRWrapper::setEye(OVR::Util::Render::StereoEye eye)
 {
     currentEye = sConfig.GetEyeRenderParams(eye);
-    OVR::Util::Render::Viewport vp = currentEye.VP;
-    glViewport(vp.x, vp.y, vp.w, vp.h);
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(vp.x, vp.y, vp.w, vp.h);
+    //OVR::Util::Render::Viewport vp = currentEye.VP;
+    //glViewport(renderScale*vp.x, renderScale*vp.y, renderScale*vp.w, renderScale*vp.h);
+    //std::cout << "Viewport to " << renderScale*vp.x << " " << renderScale*vp.y << " " << renderScale*vp.w << " " << renderScale*vp.h << std::endl;
+    //glEnable(GL_SCISSOR_TEST);
+    //glScissor(renderScale*vp.x, renderScale*vp.y, renderScale*vp.w, renderScale*vp.h);
 }
 
 glm::mat4 OVRWrapper::getViewAdjust()
