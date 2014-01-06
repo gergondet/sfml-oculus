@@ -72,7 +72,7 @@ int main(int argc, char * argv[])
     text.setCharacterSize(40);
     text.setColor(sf::Color::Red);
 
-    sf::Texture bgTexture; bgTexture.loadFromFile("testBG.JPG");
+    sf::Texture bgTexture; bgTexture.loadFromFile("bg/background.png");
     sf::Sprite bgSprite(bgTexture);
     bgSprite.setScale(window.getRenderScale(), window.getRenderScale());
 

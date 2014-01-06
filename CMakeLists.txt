@@ -8,17 +8,27 @@ SET(OCULUS_SDK_DIR /home/gergondet/devel-src/oculus/OculusSDK)
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/i386)
 
-SET(${PROJECT_NAME}_SRC
+SET(${PROJECT_NAME}_LIB_SRC
 src/OVRWrapper.cpp
 src/SFMLScreen.cpp
-src/PLYMesh.cpp
 src/PostProcessing.cpp
 src/OculusWindow.cpp
-src/main.cpp
 )
 
-ADD_EXECUTABLE(${PROJECT_NAME} ${${PROJECT_NAME}_SRC})
+SET(${PROJECT_NAME}_EXAMPLE_SRC
+src/PLYMesh.cpp
+src/sfml-oculus-example.cpp
+)
+
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_LIB_SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem)
+
+ADD_EXECUTABLE(${PROJECT_NAME}-example ${${PROJECT_NAME}_EXAMPLE_SRC})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}-example ${PROJECT_NAME})
+
+SET(BG
+${CMAKE_SOURCE_DIR}/bg/background.png
+)
 
 SET(FONTS
 ${CMAKE_SOURCE_DIR}/fonts/arial.ttf
@@ -44,6 +54,7 @@ ${CMAKE_SOURCE_DIR}/shaders/postproc.frag
 ${CMAKE_SOURCE_DIR}/shaders/postproc.vert
 )
 
+FILE(COPY ${BG} DESTINATION ${CMAKE_BINARY_DIR}/bg)
 FILE(COPY ${FONTS} DESTINATION ${CMAKE_BINARY_DIR}/fonts)
 FILE(COPY ${MODELS} DESTINATION ${CMAKE_BINARY_DIR}/models)
 FILE(COPY ${SHADERS} DESTINATION ${CMAKE_BINARY_DIR}/shaders)
