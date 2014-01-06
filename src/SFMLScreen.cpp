@@ -3,7 +3,9 @@
 #include <iostream>
 
 SFMLScreen::SFMLScreen()
-: sf::RenderTexture(), width(0), height(0), wwidth(0), wheight(0)
+: sf::RenderTexture(),
+  model(glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1.4))),
+  width(0), height(0), wwidth(0), wheight(0)
 {
 }
 
@@ -53,7 +55,7 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void SFMLScreen::render(glm::mat4 & mvp)
+void SFMLScreen::render(glm::mat4 & vp)
 {
     sf::Shader::bind(&shader);
 
@@ -61,7 +63,7 @@ void SFMLScreen::render(glm::mat4 & mvp)
     glEnableVertexAttribArray(attribute_texcoord);
     glVertexAttribPointer(attribute_texcoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glUniformMatrix4fv(uniform_transform, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(uniform_transform, 1, GL_FALSE, glm::value_ptr(vp*model));
 
     sf::Texture::bind(&(getTexture()));
     shader.setParameter("texture", sf::Shader::CurrentTexture);

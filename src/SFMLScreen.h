@@ -21,8 +21,14 @@ public:
 
     void init(float w, float h, float ww, float wh);
 
-    void render(glm::mat4 & mvp);
+    void render(glm::mat4 & vp);
+
+    const glm::mat4 & getModel() { return model; }
+
+    void setModel(const glm::mat4 && m) { model = m; }
 private:
+    glm::mat4 model;
+
     float width;
     float height;
     float wwidth;

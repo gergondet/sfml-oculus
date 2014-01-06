@@ -5,7 +5,6 @@
 PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight) 
 : width(width), height(height), windowWidth(winWidth), windowHeight(winHeight)
 {
-    std::cout << "Postproc created  " << width << " " << height << std::endl;
     shader.loadFromFile("shaders/postproc.vert", "shaders/postproc.frag");
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
