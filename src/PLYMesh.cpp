@@ -163,14 +163,14 @@ void PLYMesh::loadFromFile(const std::string & ply_model)
     }
 }
 
-void PLYMesh::render(glm::mat4 & mvp)
+void PLYMesh::render(glm::mat4 & vp)
 {
     GLhandleARB old_program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     sf::Shader::bind(&shader);
     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
 
     GLint uniform_mvp = glGetUniformLocation(program, "transform");
-    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(vp*model));
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_vertices);
     GLint attribute_coord3d = glGetAttribLocation(program, "coord3d");

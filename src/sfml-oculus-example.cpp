@@ -17,6 +17,8 @@
 
 #include <OVR.h>
 
+#include <boost/bind.hpp>
+
 inline std::ostream & operator<<(std::ostream & os, const OVR::Util::Render::StereoEye & eye)
 {
     switch(eye)
@@ -61,6 +63,7 @@ int main(int argc, char * argv[])
     OculusWindow window(sf::VideoMode(width, height), "Oculus window for SFML", sf::Style::Close, contextSettings);
 
     sf::Clock clock;
+    sf::Clock anim_clock;
 
     sf::Font font;
     font.loadFromFile("fonts/arial.ttf");
@@ -75,6 +78,11 @@ int main(int argc, char * argv[])
     sf::Texture bgTexture; bgTexture.loadFromFile("bg/background.png");
     sf::Sprite bgSprite(bgTexture);
     bgSprite.setScale(window.getRenderScale(), window.getRenderScale());
+
+    PLYMesh box;
+    box.loadFromFile("models/can.ply");
+    boost::function< void (glm::mat4 & vp) > fn = boost::bind(&PLYMesh::render, &box, _1);
+    window.addGLcallback(fn);
 
     sf::Window & app = window.getApplication();
     sf::RenderTarget & target = window.getRenderTarget();
@@ -120,6 +128,13 @@ int main(int argc, char * argv[])
         target.draw(center);
         target.draw(text);
         /* End of SFML drawings */
+
+        static float angle = 0;
+        glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
+        angle += 90*anim_clock.getElapsedTime().asMicroseconds()/1e6;
+        anim_clock.restart();
+        glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.25, 0.5));
+        box.setModel(model_box*anim_box);
 
         window.show();
 

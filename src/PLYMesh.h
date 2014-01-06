@@ -32,7 +32,11 @@ public:
 
     void loadFromFile(const std::string & ply_model);
 
-    void render(glm::mat4 & mvp);
+    void render(glm::mat4 & vp);
+
+    glm::mat4 & getModel() { return model; }
+
+    void setModel(const glm::mat4 && m) { model = m; }
 private:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
@@ -48,6 +52,8 @@ private:
     GLuint ibo_faces;
     GLuint ibo_triangles;
     GLuint ibo_quads;
+
+    glm::mat4 model;
 };
 
 #endif

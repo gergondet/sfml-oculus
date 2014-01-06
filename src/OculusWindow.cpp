@@ -9,6 +9,7 @@
 #include "PostProcessing.h"
 
 #include <iostream>
+#include <boost/function.hpp>
 
 struct OculusWindowImpl
 {
@@ -23,11 +24,13 @@ public:
       postproc_left(renderWidth/2, renderHeight, width, height),
       postproc_right(renderWidth/2, renderHeight, width, height),
       screen(),
-      view(glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)))
+      view(glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0))),
+      gl_calls(0)
     {
-        screen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
+        window.setActive();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
+        screen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
     }
 
     void render(OVR::Util::Render::StereoEye eye, PostProcessing & postproc)
@@ -56,6 +59,13 @@ public:
         window.clear();
         screen.render(vp);
         glClear(GL_DEPTH_BUFFER_BIT);
+
+        /* Call optionnal rendering functions */
+        for(auto it = gl_calls.begin(); it != gl_calls.end(); ++it)
+        {
+            (*it)(vp);
+        }
+
         postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? window.getSize().x/2 : 0);
     }
 
@@ -68,6 +78,7 @@ public:
     PostProcessing postproc_right;
     SFMLScreen screen;
     glm::mat4 view;
+    std::vector< boost::function<void (glm::mat4 & vp)> > gl_calls;
 };
 
 OculusWindow::OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
@@ -82,6 +93,10 @@ OculusWindow::~OculusWindow()
 void OculusWindow::show()
 {
     impl->screen.display();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+
     impl->window.clear();
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -114,4 +129,9 @@ void OculusWindow::setScreenModel(glm::mat4 && model)
 const glm::mat4 & OculusWindow::getScreenModel()
 {
     return impl->screen.getModel();
+}
+
+void OculusWindow::addGLcallback(boost::function<void (glm::mat4 & vp)> && fn)
+{
+    impl->gl_calls.push_back(fn);
 }

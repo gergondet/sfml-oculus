@@ -1,6 +1,7 @@
 #ifndef _H_OCULUSWINDOW_H_
 #define _H_OCULUSWINDOW_H_
 
+#include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -30,6 +31,8 @@ public:
     void setScreenModel(glm::mat4 && model);
 
     const glm::mat4 & getScreenModel();
+
+    void addGLcallback(boost::function<void (glm::mat4 & vp)> && fn);
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };
