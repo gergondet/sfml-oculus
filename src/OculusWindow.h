@@ -20,7 +20,7 @@ public:
 
     ~OculusWindow();
 
-    void show();
+    void display();
 
     sf::Window & getApplication();
 

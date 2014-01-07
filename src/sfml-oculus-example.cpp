@@ -136,7 +136,7 @@ int main(int argc, char * argv[])
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.25, 0.5));
         box.setModel(model_box*anim_box);
 
-        window.show();
+        window.display();
 
         frameC++;
         if(frameC == 100)

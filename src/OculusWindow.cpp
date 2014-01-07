@@ -90,7 +90,7 @@ OculusWindow::~OculusWindow()
 {
 }
 
-void OculusWindow::show()
+void OculusWindow::display()
 {
     impl->screen.display();
 
