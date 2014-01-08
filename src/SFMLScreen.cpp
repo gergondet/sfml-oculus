@@ -1,5 +1,8 @@
 #include "SFMLScreen.h"
 
+#include <boost/filesystem.hpp>
+namespace bfs = boost::filesystem;
+
 #include <iostream>
 
 SFMLScreen::SFMLScreen()
@@ -9,12 +12,14 @@ SFMLScreen::SFMLScreen()
 {
 }
 
-void SFMLScreen::init(float w, float h, float ww, float wh)
+void SFMLScreen::init(float w, float h, float ww, float wh, const std::string & shader_path)
 {
     width = w; height = h; wwidth = ww; wheight = wh;
     create(width, height);
 
-    shader.loadFromFile("shaders/sfmlscreen_shader.vert", "shaders/sfmlscreen_shader.frag");
+    bfs::path vert_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.vert";
+    bfs::path frag_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.frag";
+    shader.loadFromFile(vert_shader.string(), frag_shader.string());
 
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);

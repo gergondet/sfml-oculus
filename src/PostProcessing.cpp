@@ -1,11 +1,16 @@
 #include "PostProcessing.h"
 
+#include <boost/filesystem.hpp>
+namespace bfs = boost::filesystem;
+
 #include <iostream>
 
-PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight) 
+PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight, const std::string & shader_path) 
 : width(width), height(height), windowWidth(winWidth), windowHeight(winHeight)
 {
-    shader.loadFromFile("shaders/postproc.vert", "shaders/postproc.frag");
+    bfs::path vert_shader = bfs::path(shader_path) / "shaders/postproc.vert";
+    bfs::path frag_shader = bfs::path(shader_path) / "shaders/postproc.frag";
+    shader.loadFromFile(vert_shader.string(), frag_shader.string());
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     attribute_coord2d = glGetAttribLocation(program, "coord2d");

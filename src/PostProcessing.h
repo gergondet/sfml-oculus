@@ -17,7 +17,7 @@
 class PostProcessing : public boost::noncopyable
 {
 public:
-    PostProcessing(float width, float height, float windowWidth, float windowHeight);
+    PostProcessing(float width, float height, float windowWidth, float windowHeight, const std::string & shader_path = ".");
 
     ~PostProcessing();
 
