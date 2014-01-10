@@ -69,6 +69,11 @@ public:
         postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? window.getSize().x/2 : 0);
     }
 
+    void clearGLcallbacks()
+    {
+        gl_calls.clear();
+    }
+
 public:
     sf::RenderWindow window;
     float width; float height;
@@ -134,4 +139,9 @@ const glm::mat4 & OculusWindow::getScreenModel()
 void OculusWindow::addGLcallback(boost::function<void (glm::mat4 & vp)> && fn)
 {
     impl->gl_calls.push_back(fn);
+}
+
+void OculusWindow::clearGLcallbacks()
+{
+    impl->clearGLcallbacks();
 }

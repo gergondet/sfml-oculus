@@ -83,6 +83,7 @@ int main(int argc, char * argv[])
     box.loadFromFile("models/can.ply");
     boost::function< void (glm::mat4 & vp) > fn = boost::bind(&PLYMesh::render, &box, _1);
     window.addGLcallback(fn);
+    bool display_box = true;
 
     sf::Window & app = window.getApplication();
     sf::RenderTarget & target = window.getRenderTarget();
@@ -109,6 +110,13 @@ int main(int argc, char * argv[])
                 ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down ))
             {
                 window.setScreenModel(glm::translate(window.getScreenModel(), glm::vec3(0,0,0.1)));
+            }
+            if(event.type == sf::Event::Closed ||
+                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space ))
+            {
+                if(display_box) window.clearGLcallbacks();
+                else window.addGLcallback(fn);
+                display_box = !display_box;
             }
         }
 
