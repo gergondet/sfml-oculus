@@ -4,7 +4,7 @@ SET(PROJECT_NAME sfml-oculus)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-SET(OCULUS_SDK_DIR /home/gergondet/devel-src/oculus/OculusSDK)
+SET(OCULUS_SDK_DIR /home/pbs/devel-src/OculusSDK)
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/i386)
 
@@ -21,7 +21,7 @@ src/sfml-oculus-example.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_LIB_SRC})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
 
 ADD_EXECUTABLE(${PROJECT_NAME}-example ${${PROJECT_NAME}_EXAMPLE_SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-example ${PROJECT_NAME})

@@ -32,7 +32,7 @@ public:
 
     const glm::mat4 & getScreenModel();
 
-    void addGLcallback(boost::function<void (glm::mat4 & vp)> && fn);
+    void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
     void clearGLcallbacks();
 protected:
