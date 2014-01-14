@@ -15,7 +15,7 @@ SFMLScreen::SFMLScreen()
 void SFMLScreen::init(float w, float h, float ww, float wh, const std::string & shader_path)
 {
     width = w; height = h; wwidth = ww; wheight = wh;
-    create(width, height);
+    create(width, height, true);
 
     bfs::path vert_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.vert";
     bfs::path frag_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.frag";
