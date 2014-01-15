@@ -4,7 +4,7 @@ SET(PROJECT_NAME sfml-oculus)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-SET(OCULUS_SDK_DIR /home/pbs/devel-src/OculusSDK)
+SET(OCULUS_SDK_DIR /home/gergondet/devel-src/oculus/OculusSDK)
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/i386)
 

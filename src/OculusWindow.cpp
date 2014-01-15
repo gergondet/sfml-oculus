@@ -29,8 +29,11 @@ public:
     {
         window.setActive();
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glEnable(GL_TEXTURE_2D);
         screen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
     }
 
     void render(OVR::Util::Render::StereoEye eye, PostProcessing & postproc)
