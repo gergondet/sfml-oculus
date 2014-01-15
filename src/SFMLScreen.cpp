@@ -12,14 +12,27 @@ SFMLScreen::SFMLScreen()
 {
 }
 
-void SFMLScreen::init(float w, float h, float ww, float wh, const std::string & shader_path)
+void SFMLScreen::init(float w, float h, float ww, float wh)
 {
     width = w; height = h; wwidth = ww; wheight = wh;
     create(width, height, true);
 
-    bfs::path vert_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.vert";
-    bfs::path frag_shader = bfs::path(shader_path) / "shaders/sfmlscreen_shader.frag";
-    shader.loadFromFile(vert_shader.string(), frag_shader.string());
+    std::string vert_shader = """uniform mat4 transform;\
+                                 attribute vec3 coord3d;\
+                                 attribute vec2 texcoord;\
+                                 varying vec2 f_texcoord;\
+                                 void main(void)\
+                                 {\
+                                   gl_Position = transform*vec4(coord3d, 1.0);\
+                                   f_texcoord = texcoord;\
+                                 }""";
+    std::string frag_shader = """varying vec2 f_texcoord;\
+                                 uniform sampler2D texture;\
+                                 void main(void)\
+                                 {\
+                                   gl_FragColor = texture2D(texture, f_texcoord);\
+                                 }""";
+    shader.loadFromMemory(vert_shader, frag_shader);
 
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);

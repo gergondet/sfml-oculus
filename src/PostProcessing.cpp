@@ -5,12 +5,42 @@ namespace bfs = boost::filesystem;
 
 #include <iostream>
 
-PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight, const std::string & shader_path) 
+PostProcessing::PostProcessing(float width, float height, float winWidth, float winHeight)
 : width(width), height(height), windowWidth(winWidth), windowHeight(winHeight)
 {
-    bfs::path vert_shader = bfs::path(shader_path) / "shaders/postproc.vert";
-    bfs::path frag_shader = bfs::path(shader_path) / "shaders/postproc.frag";
-    shader.loadFromFile(vert_shader.string(), frag_shader.string());
+    std::string vert_shader="""attribute vec2 coord2d;\
+                               varying vec2 f_texcoord;\
+                               void main(void)\
+                               {\
+                                 gl_Position = vec4(coord2d, 0.0, 1.0);\
+                                 f_texcoord = (coord2d+1.0)/2.0;\
+                               }""";
+    std::string frag_shader="""uniform sampler2D fbo_texture;\
+                               varying vec2 f_texcoord;\
+                               uniform vec2 LensCenter;\
+                               uniform vec4 HmdWarpParam;\
+                               uniform vec2 Scale;\
+                               uniform vec2 ScaleInv;\
+                               vec2 hmdWarp(vec2 in01)\
+                               {\
+                                 vec2 theta = (in01 - 0.5 - LensCenter)*ScaleInv;\
+                                 float rSq = theta.x*theta.x + theta.y*theta.y;\
+                                 vec2 theta1 = theta * (HmdWarpParam.x + HmdWarpParam.y * rSq + HmdWarpParam.z * rSq * rSq + HmdWarpParam.w * rSq * rSq * rSq);\
+                                 return 0.5 + LensCenter + Scale*theta1;\
+                               }\
+                               void main(void) {\
+                                 vec2 tc = hmdWarp(f_texcoord);\
+                                 if(!all(equal(clamp(tc, vec2(0,0), vec2(1,1)), tc)))\
+                                 {\
+                                     gl_FragColor = vec4(0);\
+                                 }\
+                                 else\
+                                 {\
+                                     gl_FragColor = texture2D(fbo_texture, tc);\
+                                 }\
+                               }""";
+
+    shader.loadFromMemory(vert_shader, frag_shader);
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     attribute_coord2d = glGetAttribLocation(program, "coord2d");

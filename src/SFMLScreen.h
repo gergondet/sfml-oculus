@@ -19,7 +19,7 @@ class SFMLScreen : public sf::RenderTexture, public boost::noncopyable
 public: 
     SFMLScreen();
 
-    void init(float w, float h, float ww, float wh, const std::string & shader_path = ".");
+    void init(float w, float h, float ww, float wh);
 
     void render(glm::mat4 & vp);
 

@@ -14,15 +14,15 @@
 struct OculusWindowImpl
 {
 public:
-    OculusWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings, const std::string & shader_path)
+    OculusWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
     : window(mode, title, style, settings), 
       width(window.getSize().x), height(window.getSize().y),
       oculus(width, height),
       renderWidth( ceil(oculus.getRenderScale()*width) ), 
       renderHeight( ceil(oculus.getRenderScale()*height) ),
       sfmlScreenHeight(oculus.getRenderScale()*480),
-      postproc_left(renderWidth/2, renderHeight, width, height, shader_path),
-      postproc_right(renderWidth/2, renderHeight, width, height, shader_path),
+      postproc_left(renderWidth/2, renderHeight, width, height),
+      postproc_right(renderWidth/2, renderHeight, width, height),
       screen(),
       view(glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0))),
       gl_calls(0)
@@ -30,7 +30,7 @@ public:
         window.setActive();
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_2D);
-        screen.init(renderWidth/2, sfmlScreenHeight, width/2, height, shader_path);
+        screen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
     }
 
     void render(OVR::Util::Render::StereoEye eye, PostProcessing & postproc)
@@ -86,8 +86,8 @@ public:
     std::vector< boost::function<void (glm::mat4 & vp)> > gl_calls;
 };
 
-OculusWindow::OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings, const std::string & shader_path)
-: impl(new OculusWindowImpl(mode, title, style, settings, shader_path))
+OculusWindow::OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
+: impl(new OculusWindowImpl(mode, title, style, settings))
 {
 }
 

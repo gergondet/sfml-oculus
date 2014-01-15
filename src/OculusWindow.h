@@ -16,7 +16,7 @@ struct OculusWindowImpl;
 class OculusWindow : public boost::noncopyable
 {
 public:
-    OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings(), const std::string & shader_path = ".");
+    OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
 
     ~OculusWindow();
 
