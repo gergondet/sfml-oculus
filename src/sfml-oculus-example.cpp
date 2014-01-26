@@ -120,6 +120,9 @@ int main(int argc, char * argv[])
             }
         }
 
+        /* Get HMD orientation */
+        Eigen::Vector3d hmdOrientation = window.GetHMDOrientation();
+
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
         target.clear(sf::Color::White);

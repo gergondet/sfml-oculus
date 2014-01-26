@@ -46,7 +46,7 @@ inline std::ostream & operator<<(std::ostream & os, const glm::mat4 & m)
 }
 
 OVRWrapper::OVRWrapper(float width, float height, bool enable_scaling)
-: manager(0), hmd(0), hmdInfo(), sensor(0), sConfig(), currentEye(), renderScale(0)
+: manager(0), hmd(0), hmdInfo(), sensor(0), sfusion(0), sConfig(), currentEye(), renderScale(0)
 {
     OVR::System::Init(OVR::Log::ConfigureDefaultLog(OVR::LogMask_All));
 
@@ -89,6 +89,10 @@ OVRWrapper::OVRWrapper(float width, float height, bool enable_scaling)
         std::cout << "HMD & SENSOR DETECTED" << std::endl;
         std::cout << "---------------------------------" << std::endl;;
     }
+    if(sensor)
+    {
+        sfusion = new OVR::SensorFusion(sensor); 
+    }
     sConfig.SetFullViewport(OVR::Util::Render::Viewport(0,0, width, height));
     sConfig.SetStereoMode(OVR::Util::Render::Stereo_LeftRight_Multipass);
     sConfig.SetDistortionFitPointVP(-1.0f, 0.0f);
@@ -97,6 +101,7 @@ OVRWrapper::OVRWrapper(float width, float height, bool enable_scaling)
 
 OVRWrapper::~OVRWrapper()
 {
+    delete sfusion;
     delete sensor;
     delete hmd;
     /*FIXME This hangs-out at exit, find out why */
@@ -132,4 +137,17 @@ glm::mat4 OVRWrapper::getProjection()
         projection[i][j] = proj_in.M[i][j];
     } }
     return projection;
+}
+
+Eigen::Vector3d OVRWrapper::GetHMDOrientation()
+{
+    Eigen::Vector3d res;
+    if(sensor)
+    {
+        OVR::Quatf hmdOrientation = sfusion->GetOrientation();
+        float yaw; float pitch; float roll;
+        hmdOrientation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
+        res(0) = yaw; res(1) = pitch; res(2) = roll;
+    }
+    return res;
 }

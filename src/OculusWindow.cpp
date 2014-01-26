@@ -148,3 +148,8 @@ void OculusWindow::clearGLcallbacks()
 {
     impl->clearGLcallbacks();
 }
+
+Eigen::Vector3d OculusWindow::GetHMDOrientation()
+{
+    return impl->oculus.GetHMDOrientation();
+}

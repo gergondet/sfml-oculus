@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <Eigen/Core>
+
 #include <boost/noncopyable.hpp>
 
 class OVRWrapper : public boost::noncopyable
@@ -29,11 +31,15 @@ public:
     const OVR::Util::Render::DistortionConfig * getDistortionConfig() { return currentEye.pDistortion; }
 
     float getRenderScale() { return renderScale; }
+
+    /* Returns the YPR values of head orientation */
+    Eigen::Vector3d GetHMDOrientation();
 private:
     OVR::DeviceManager * manager;
     OVR::HMDDevice * hmd;
     OVR::HMDInfo hmdInfo;
     OVR::SensorDevice * sensor;
+    OVR::SensorFusion * sfusion;
     OVR::Util::Render::StereoConfig sConfig;
     OVR::Util::Render::StereoEyeParams currentEye;
     float renderScale;

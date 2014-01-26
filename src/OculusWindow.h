@@ -10,6 +10,7 @@
 #include <SFML/OpenGL.hpp>
 
 #include <glm/glm.hpp>
+#include <Eigen/Core>
 
 struct OculusWindowImpl;
 
@@ -31,6 +32,8 @@ public:
     void setScreenModel(glm::mat4 && model);
 
     const glm::mat4 & getScreenModel();
+
+    Eigen::Vector3d GetHMDOrientation();
 
     void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
