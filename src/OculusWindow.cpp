@@ -10,12 +10,53 @@
 
 #include <iostream>
 #include <boost/function.hpp>
+#include <sstream>
 
 struct OculusWindowImpl
 {
+    struct FPSCounter
+    {
+        FPSCounter() : fps_clock(), text("FPS: 0"), fC(0)
+        {
+            reset();
+        }
+
+        void reset()
+        {
+            fps_clock.restart();
+            fC = 0;
+        }
+
+        /* Return true if the text has been updated */
+        bool increment()
+        {
+            ++fC;
+            if(fC % 128 == 0)
+            {
+                std::stringstream ss;
+                ss << "FPS: " << 1e6*128/(double)fps_clock.getElapsedTime().asMicroseconds();
+                text = ss.str();
+                reset();
+                return true;
+            }
+            return false;
+        }
+
+        const std::string & getText()
+        {
+            return text;
+        }
+
+        private:
+            sf::Clock fps_clock;
+            std::string text;
+            uint8_t fC;
+    };
+
 public:
     OculusWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
-    : window(mode, title, style, settings), 
+    : window(mode, title, style, settings),
+      fps_text(), fps_text_enabled(false), fps_counter(),
       width(window.getSize().x), height(window.getSize().y),
       oculus(width, height),
       renderWidth( ceil(oculus.getRenderScale()*width) ), 
@@ -34,6 +75,16 @@ public:
         screen.init(renderWidth/2, sfmlScreenHeight, width/2, height);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
+    }
+
+    void enableFPSText(const sf::Font & font)
+    {
+        fps_text.setFont(font);
+        fps_text.setString("FPS: 0");
+        fps_text.setColor(sf::Color(255,0,0,255));
+        fps_text.setPosition(10, 10);
+        fps_counter.reset();
+        fps_text_enabled = true;
     }
 
     void render(OVR::Util::Render::StereoEye eye, PostProcessing & postproc)
@@ -79,6 +130,9 @@ public:
 
 public:
     sf::RenderWindow window;
+    sf::Text fps_text;
+    bool fps_text_enabled;
+    FPSCounter fps_counter;
     float width; float height;
     OVRWrapper oculus;
     float renderWidth; float renderHeight; float sfmlScreenHeight;
@@ -98,6 +152,16 @@ OculusWindow::~OculusWindow()
 {
 }
 
+void OculusWindow::enableFPSCounter(const sf::Font & font)
+{
+    impl->enableFPSText(font);
+}
+
+void OculusWindow::disableFPSCounter()
+{
+    impl->fps_text_enabled = false;
+}
+
 void OculusWindow::display()
 {
     impl->screen.display();
@@ -110,6 +174,17 @@ void OculusWindow::display()
 
     impl->render(OVR::Util::Render::StereoEye_Left, impl->postproc_left);
     impl->render(OVR::Util::Render::StereoEye_Right, impl->postproc_right);
+
+    if(impl->fps_text_enabled)
+    {
+        if(impl->fps_counter.increment())
+        {
+            impl->fps_text.setString(impl->fps_counter.getText());
+        }
+        impl->window.resetGLStates();
+        glEnable(GL_DEPTH_TEST);
+        impl->window.draw(impl->fps_text);
+    }
 
     impl->window.display();
 }

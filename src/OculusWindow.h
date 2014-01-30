@@ -35,6 +35,10 @@ public:
     void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
     void clearGLcallbacks();
+
+    void enableFPSCounter(const sf::Font & font);
+
+    void disableFPSCounter();
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };
