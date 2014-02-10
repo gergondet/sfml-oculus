@@ -12,6 +12,16 @@ MESSAGE("Found Oculus SDK at ${OCULUS_SDK_DIR}")
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/i386)
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/x86_64)
+# jherico SDK
+FIND_FILE(OCULUS_LIB build/LibOVR/libOculusVR.a PATHS ${CMAKE_SOURCE_DIR}/../OculusSDK ${CMAKE_BINARY_DIR}/jherico/OculusSDK)
+IF(NOT ${OCULUS_LIB})
+SET(OCULUS_LIB ovr)
+ELSE()
+SET(OCULUS_LIB libOculusVR)
+ENDIF()
+MESSAGE("Found OVR library ${OCULUS_LIB}")
+LINK_DIRECTORIES(${OCULUS_SDK_DIR}/build/LibOVR)
+
 
 INCLUDE_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/include)
 LINK_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/lib)
@@ -29,7 +39,7 @@ src/sfml-oculus-example.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_LIB_SRC})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ${OCULUS_LIB} sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
 
 ADD_EXECUTABLE(${PROJECT_NAME}-example ${${PROJECT_NAME}_EXAMPLE_SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-example ${PROJECT_NAME})
