@@ -5,8 +5,8 @@ SET(PROJECT_NAME sfml-oculus)
 # C++0x is only used internally for convenience such as auto
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-# FIXME Set to appropriate directory if having trouble to find OVRSDK
-FIND_PATH(OCULUS_SDK_DIR "LibOVR/Include/OVR.h" PATHS ${CMAKE_SOURCE_DIR}/../OculusSDK ${CMAKE_BINARY_DIR})
+# FIXME Set to appropriate directory if having trouble to find OVRSDK, second entry is for travis
+FIND_PATH(OCULUS_SDK_DIR "LibOVR/Include/OVR.h" PATHS ${CMAKE_SOURCE_DIR}/../OculusSDK ${CMAKE_BINARY_DIR}/jherico/OculusSDK)
 MESSAGE("Found Oculus SDK at ${OCULUS_SDK_DIR}")
 # FIXME
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
