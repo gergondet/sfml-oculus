@@ -204,9 +204,9 @@ float OculusWindow::getRenderScale()
     return impl->oculus.getRenderScale();
 }
 
-void OculusWindow::setScreenModel(glm::mat4 && model)
+void OculusWindow::setScreenModel(const glm::mat4 & model)
 {
-    impl->screen.setModel(std::move(model));
+    impl->screen.setModel(model);
 }
 
 const glm::mat4 & OculusWindow::getScreenModel()

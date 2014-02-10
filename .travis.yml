@@ -1,0 +1,16 @@
+language: cpp
+compiler: gcc
+env:
+  global:
+  - APT_DEPENDENCIES="libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev doxygen doxygen-latex libltdl-dev libboost-all-dev liblog4cxx10-dev freeglut3-dev libglm-dev"
+  - GIT_DEPENDENCIES="LaurentGomila/SFML OculusCommunitySDK/OculusSDK"
+notifications:
+  email:
+  - pierre.gergondet+github@gmail.com 
+branches:
+  only:
+  - master
+script: ./.travis/run build
+after_success: ./.travis/run after_success
+after_failure: ./.travis/run after_failure
+before_install: ./.travis/run before_install

@@ -28,7 +28,7 @@ public:
 
     float getRenderScale();
 
-    void setScreenModel(glm::mat4 && model);
+    void setScreenModel(const glm::mat4 & model);
 
     const glm::mat4 & getScreenModel();
 
