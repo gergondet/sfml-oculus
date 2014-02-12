@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(PROJECT_NAME sfml-oculus)
 
+ENABLE_TESTING()
+
 # C++0x is only used internally for convenience such as auto
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
