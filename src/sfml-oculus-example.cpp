@@ -68,6 +68,9 @@ int main(int argc, char * argv[])
     sf::Font font;
     font.loadFromFile("fonts/arial.ttf");
 
+    bool fps_counter = true;
+    window.enableFPSCounter(font);
+
     sf::Text text;
     text.setString("FPS: 0");
     text.setFont(font);
@@ -100,23 +103,26 @@ int main(int argc, char * argv[])
             {
                 quit = true;
             }
-            if(event.type == sf::Event::Closed ||
-                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up ))
+            if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Up )
             {
 
                 window.setScreenModel(glm::translate(window.getScreenModel(), glm::vec3(0,0,-0.1)));
             }
-            if(event.type == sf::Event::Closed ||
-                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down ))
+            if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Down )
             {
                 window.setScreenModel(glm::translate(window.getScreenModel(), glm::vec3(0,0,0.1)));
             }
-            if(event.type == sf::Event::Closed ||
-                ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space ))
+            if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space )
             {
                 if(display_box) window.clearGLcallbacks();
                 else window.addGLcallback(fn);
                 display_box = !display_box;
+            }
+            if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F )
+            {
+                if(fps_counter) window.disableFPSCounter();
+                else window.enableFPSCounter(font);
+                fps_counter = !fps_counter;
             }
         }
 

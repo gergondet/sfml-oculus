@@ -36,7 +36,7 @@ public:
 
     glm::mat4 & getModel() { return model; }
 
-    void setModel(const glm::mat4 && m) { model = m; }
+    void setModel(const glm::mat4 & m) { model = m; }
 private:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;

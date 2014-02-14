@@ -25,7 +25,7 @@ public:
 
     const glm::mat4 & getModel() { return model; }
 
-    void setModel(const glm::mat4 && m) { model = m; }
+    void setModel(const glm::mat4 & m) { model = m; }
 private:
     glm::mat4 model;
 

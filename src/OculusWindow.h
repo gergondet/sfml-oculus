@@ -29,7 +29,7 @@ public:
 
     float getRenderScale();
 
-    void setScreenModel(glm::mat4 && model);
+    void setScreenModel(const glm::mat4 & model);
 
     const glm::mat4 & getScreenModel();
 
@@ -38,6 +38,10 @@ public:
     void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
     void clearGLcallbacks();
+
+    void enableFPSCounter(const sf::Font & font);
+
+    void disableFPSCounter();
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };

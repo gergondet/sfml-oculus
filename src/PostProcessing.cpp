@@ -131,6 +131,7 @@ void PostProcessing::endRendering(float vp_w)
     glDisableVertexAttribArray(attribute_coord2d);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    sf::Shader::bind(0);
 }
 
 void PostProcessing::setDistortionParameters(const glm::vec4 & K, const glm::vec2 & lensCenter, const glm::vec2 & scale, const glm::vec2 & scaleInv)

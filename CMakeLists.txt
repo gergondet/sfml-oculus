@@ -2,11 +2,33 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(PROJECT_NAME sfml-oculus)
 
+ENABLE_TESTING()
+
+# C++0x is only used internally for convenience such as auto
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-SET(OCULUS_SDK_DIR /home/gergondet/devel-src/oculus/OculusSDK)
+# FIXME Set to appropriate directory if having trouble to find OVRSDK, second entry is for travis
+FIND_PATH(OCULUS_SDK_DIR "LibOVR/Include/OVR.h" PATHS ${CMAKE_SOURCE_DIR}/../OculusSDK ${CMAKE_BINARY_DIR}/jherico/OculusSDK ${CMAKE_SOURCE_DIR}/../jherico/OculusSDK ${CMAKE_SOURCE_DIR}/../../jherico/OculusSDK)
+MESSAGE("Found Oculus SDK at ${OCULUS_SDK_DIR}")
+# FIXME
+
+SET(USE_JHERICO_SDK 1)
+
 INCLUDE_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Include)
+IF(USE_JHERICO_SDK EQUAL 1)
+LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/)
+LINK_DIRECTORIES(${OCULUS_SDK_DIR}/3rdParty/EDID)
+SET(OCULUS_LIB OculusVR edid)
+ELSE()
 LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/i386)
+LINK_DIRECTORIES(${OCULUS_SDK_DIR}/LibOVR/Lib/Linux/Release/x86_64)
+SET(OCULUS_LIB ovr)
+ENDIF()
+MESSAGE("Found OVR library ${OCULUS_LIB}")
+
+
+INCLUDE_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/include)
+LINK_DIRECTORIES(${CMAKE_INSTALL_PREFIX}/lib)
 
 SET(${PROJECT_NAME}_LIB_SRC
 src/OVRWrapper.cpp
@@ -21,7 +43,7 @@ src/sfml-oculus-example.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_LIB_SRC})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ovr sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ${OCULUS_LIB} sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
 
 ADD_EXECUTABLE(${PROJECT_NAME}-example ${${PROJECT_NAME}_EXAMPLE_SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-example ${PROJECT_NAME})
@@ -48,10 +70,6 @@ ${CMAKE_SOURCE_DIR}/models/can.ply
 SET(SHADERS
 ${CMAKE_SOURCE_DIR}/shaders/ply_shader.frag
 ${CMAKE_SOURCE_DIR}/shaders/ply_shader.vert
-${CMAKE_SOURCE_DIR}/shaders/sfmlscreen_shader.frag
-${CMAKE_SOURCE_DIR}/shaders/sfmlscreen_shader.vert
-${CMAKE_SOURCE_DIR}/shaders/postproc.frag
-${CMAKE_SOURCE_DIR}/shaders/postproc.vert
 )
 
 FILE(COPY ${BG} DESTINATION ${CMAKE_BINARY_DIR}/bg)
@@ -61,4 +79,3 @@ FILE(COPY ${SHADERS} DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 INSTALL(FILES src/OculusWindow.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-INSTALL(FILES ${SHADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/OculusWindow/shaders/)
