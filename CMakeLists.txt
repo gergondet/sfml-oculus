@@ -4,6 +4,10 @@ SET(PROJECT_NAME sfml-oculus)
 
 ENABLE_TESTING()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+FIND_PACKAGE(Eigen3)
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIR})
+
 # C++0x is only used internally for convenience such as auto
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
