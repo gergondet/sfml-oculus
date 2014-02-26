@@ -9,6 +9,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
+#ifdef WIN32
+#define SFML_OCULUS_API __declspec(dllexport)
+#else
+#define SFML_OCULUS_API
+#endif
+
 #include <glm/glm.hpp>
 #include <Eigen/Core>
 
@@ -17,31 +23,31 @@ struct OculusWindowImpl;
 class OculusWindow : public boost::noncopyable
 {
 public:
-    OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
+    SFML_OCULUS_API OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
 
-    ~OculusWindow();
+    SFML_OCULUS_API ~OculusWindow();
 
-    void display();
+    SFML_OCULUS_API void display();
 
-    sf::Window & getApplication();
+    SFML_OCULUS_API sf::Window & getApplication();
 
-    sf::RenderTarget & getRenderTarget();
+    SFML_OCULUS_API sf::RenderTarget & getRenderTarget();
 
-    float getRenderScale();
+    SFML_OCULUS_API float getRenderScale();
 
-    void setScreenModel(const glm::mat4 & model);
+    SFML_OCULUS_API void setScreenModel(const glm::mat4 & model);
 
-    const glm::mat4 & getScreenModel();
+    SFML_OCULUS_API const glm::mat4 & getScreenModel();
 
-    Eigen::Vector3d GetHMDOrientation();
+    SFML_OCULUS_API Eigen::Vector3d GetHMDOrientation();
 
-    void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
+    SFML_OCULUS_API void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
-    void clearGLcallbacks();
+    SFML_OCULUS_API void clearGLcallbacks();
 
-    void enableFPSCounter(const sf::Font & font);
+    SFML_OCULUS_API void enableFPSCounter(const sf::Font & font);
 
-    void disableFPSCounter();
+    SFML_OCULUS_API void disableFPSCounter();
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };
