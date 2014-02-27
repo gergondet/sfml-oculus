@@ -6,6 +6,7 @@
 #include <boost/shared_ptr.hpp>
 
 #define GL_GLEXT_PROTOTYPES
+#include <GL/glew.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 

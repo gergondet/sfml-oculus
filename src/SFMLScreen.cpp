@@ -15,7 +15,7 @@ SFMLScreen::SFMLScreen()
 void SFMLScreen::init(float w, float h, float ww, float wh)
 {
     width = w; height = h; wwidth = ww; wheight = wh;
-    create(width, height, true);
+    create((unsigned int)width, (unsigned int)height, true);
 
     std::string vert_shader = """uniform mat4 transform;\
                                  attribute vec3 coord3d;\
@@ -37,8 +37,20 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     sf::Shader::bind(&shader);
     program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     attribute_coord3d = glGetAttribLocation(program, "coord3d");
+    if(attribute_coord3d == -1)
+    {
+        std::cerr << "SFMLScreen failed to fetch attribute coord3d" << std::endl;
+    }
     attribute_texcoord = glGetAttribLocation(program, "texcoord");
+    if(attribute_texcoord == -1)
+    {
+        std::cerr << "SFMLScreen failed to fetch attribute texcoord" << std::endl;
+    }
     uniform_transform = glGetUniformLocation(program, "transform");
+    if(uniform_transform == -1)
+    {
+        std::cerr << "SFMLScreen failed to fetch uniform transform" << std::endl;
+    }
 
     GLfloat vertices[] = {
     -width/wwidth, -height/wheight, 0.0,
@@ -50,6 +62,7 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glGenBuffers(1, &vbo_vertices);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_vertices);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     GLfloat texcoords[] = {
       0.0, 0.0,
@@ -60,6 +73,7 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glGenBuffers(1, &vbo_texcoords);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoords);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texcoords), texcoords, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     GLushort elements[] = {
       0, 1, 2,
@@ -69,8 +83,6 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_elements);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void SFMLScreen::render(glm::mat4 & vp)
@@ -81,7 +93,8 @@ void SFMLScreen::render(glm::mat4 & vp)
     glEnableVertexAttribArray(attribute_texcoord);
     glVertexAttribPointer(attribute_texcoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    glUniformMatrix4fv(uniform_transform, 1, GL_FALSE, glm::value_ptr(vp*model));
+    glm::mat4 mvp = vp*model;
+    glUniformMatrix4fv(uniform_transform, 1, GL_FALSE, glm::value_ptr(mvp));
 
     sf::Texture::bind(&(getTexture()));
     shader.setParameter("texture", sf::Shader::CurrentTexture);

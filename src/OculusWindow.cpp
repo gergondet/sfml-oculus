@@ -57,7 +57,7 @@ public:
     OculusWindowImpl(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
     : window(mode, title, style, settings),
       fps_text(), fps_text_enabled(false), fps_counter(),
-      width(window.getSize().x), height(window.getSize().y),
+      width((float)window.getSize().x), height((float)window.getSize().y),
       oculus(width, height),
       renderWidth( ceil(oculus.getRenderScale()*width) ), 
       renderHeight( ceil(oculus.getRenderScale()*height) ),
@@ -120,7 +120,7 @@ public:
             (*it)(vp);
         }
 
-        postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? window.getSize().x/2 : 0);
+        postproc.endRendering(eye == OVR::Util::Render::StereoEye_Right ? (float)window.getSize().x/2 : 0);
     }
 
     void clearGLcallbacks()

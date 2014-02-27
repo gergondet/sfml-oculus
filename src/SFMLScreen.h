@@ -6,6 +6,7 @@
 #include <boost/noncopyable.hpp>
 
 #define GL_GLEXT_PROTOTYPES
+#include <GL/glew.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics/Shader.hpp>
@@ -14,18 +15,24 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#ifdef WIN32
+#define SFML_OCULUS_API __declspec(dllexport)
+#else
+#define SFML_OCULUS_API
+#endif
+
 class SFMLScreen : public sf::RenderTexture, public boost::noncopyable
 {
 public: 
-    SFMLScreen();
+    SFML_OCULUS_API SFMLScreen();
 
-    void init(float w, float h, float ww, float wh);
+    SFML_OCULUS_API void init(float w, float h, float ww, float wh);
 
-    void render(glm::mat4 & vp);
+    SFML_OCULUS_API void render(glm::mat4 & vp);
 
-    const glm::mat4 & getModel() { return model; }
+    SFML_OCULUS_API const glm::mat4 & getModel() { return model; }
 
-    void setModel(const glm::mat4 & m) { model = m; }
+    SFML_OCULUS_API void setModel(const glm::mat4 & m) { model = m; }
 private:
     glm::mat4 model;
 

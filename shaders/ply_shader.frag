@@ -41,12 +41,12 @@ void main(){
         // get texture color for frame and model
         if(useDistortion)
         {
-            vec2 tc = hmdWarp(texcoords);
+            vec2 tc = hmdWarp(texcoords.xy);
             gl_FragColor =  texture2D(texture, tc);
         }
         else
         {
-            vec2 tc = texcoords;
+            vec2 tc = texcoords.xy;
             gl_FragColor =  texture2D(texture, tc);
         }
     }

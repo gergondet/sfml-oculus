@@ -93,7 +93,7 @@ OVRWrapper::OVRWrapper(float width, float height, bool enable_scaling)
     {
         sfusion = new OVR::SensorFusion(sensor); 
     }
-    sConfig.SetFullViewport(OVR::Util::Render::Viewport(0,0, width, height));
+    sConfig.SetFullViewport(OVR::Util::Render::Viewport(0,0, (int)width, (int)height));
     sConfig.SetStereoMode(OVR::Util::Render::Stereo_LeftRight_Multipass);
     sConfig.SetDistortionFitPointVP(-1.0f, 0.0f);
     renderScale = enable_scaling ? sConfig.GetDistortionScale() : 1;

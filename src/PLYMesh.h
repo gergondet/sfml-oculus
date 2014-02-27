@@ -4,6 +4,7 @@
 #include <boost/noncopyable.hpp>
 
 #define GL_GLEXT_PROTOTYPES
+#include <GL/glew.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics/Shader.hpp>

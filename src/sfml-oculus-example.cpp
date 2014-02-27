@@ -3,16 +3,9 @@
 #include <iostream>
 #include <sstream>
 
-#define GL_GLEXT_PROTOTYPES
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
-
-#include <glm/glm.hpp>
+#include "OculusWindow.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "OculusWindow.h"
-
 #include "PLYMesh.h"
 
 #include <OVR.h>
@@ -61,6 +54,8 @@ int main(int argc, char * argv[])
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 32;
     OculusWindow window(sf::VideoMode(width, height), "Oculus window for SFML", sf::Style::Close, contextSettings);
+    sf::RenderWindow & app = window.getApplication();
+    sf::RenderTarget & target = window.getRenderTarget();
 
     sf::Clock clock;
     sf::Clock anim_clock;
@@ -71,6 +66,7 @@ int main(int argc, char * argv[])
     bool fps_counter = true;
     window.enableFPSCounter(font);
 
+    target.clear();
     sf::Text text;
     text.setString("FPS: 0");
     text.setFont(font);
@@ -87,9 +83,6 @@ int main(int argc, char * argv[])
     boost::function< void (glm::mat4 & vp) > fn = boost::bind(&PLYMesh::render, &box, _1);
     window.addGLcallback(fn);
     bool display_box = true;
-
-    sf::Window & app = window.getApplication();
-    sf::RenderTarget & target = window.getRenderTarget();
 
     bool quit = false;
     unsigned int frameC = 0;
@@ -131,7 +124,8 @@ int main(int argc, char * argv[])
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
-        target.clear(sf::Color::White);
+        target.resetGLStates();
+        target.clear();
         target.draw(bgSprite);
         sf::RectangleShape border(sf::Vector2f(target.getSize().x - 10, target.getSize().y - 10));
         border.setPosition(5,5);
@@ -146,8 +140,8 @@ int main(int argc, char * argv[])
         target.draw(text);
         /* End of SFML drawings */
 
-        static float angle = 0;
-        glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1, 0));
+        static double angle = 0;
+        glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), (float)angle, glm::vec3(0, 1, 0));
         angle += 90*anim_clock.getElapsedTime().asMicroseconds()/1e6;
         anim_clock.restart();
         glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.25, 0.5));

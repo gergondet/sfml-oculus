@@ -57,13 +57,13 @@ PostProcessing::PostProcessing(float width, float height, float winWidth, float 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)width, (GLsizei)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
    
     /* Depth buffer */
     glGenRenderbuffers(1, &rbo_depth);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, (GLsizei)width, (GLsizei)height);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
    
     /* Framebuffer to link everything together */
@@ -101,9 +101,9 @@ PostProcessing::~PostProcessing()
 void PostProcessing::beginRendering()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
     glEnable(GL_SCISSOR_TEST);
-    glScissor(0, 0, width, height);
+    glScissor(0, 0, (GLsizei)width, (GLsizei)height);
 }
 
 void PostProcessing::endRendering(float vp_w)
@@ -111,7 +111,7 @@ void PostProcessing::endRendering(float vp_w)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
  
     glDisable(GL_SCISSOR_TEST);
-    glViewport(vp_w, 0, windowWidth/2, windowHeight);
+    glViewport((GLsizei)vp_w, 0, (GLsizei)windowWidth/2, (GLsizei)windowHeight);
 
     sf::Shader::bind(&shader);
     glBindTexture(GL_TEXTURE_2D, fbo_texture);

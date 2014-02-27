@@ -168,7 +168,6 @@ void PLYMesh::render(glm::mat4 & vp)
     GLhandleARB old_program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
     sf::Shader::bind(&shader);
     GLhandleARB program = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-
     GLint uniform_mvp = glGetUniformLocation(program, "transform");
     glUniformMatrix4fv(uniform_mvp, 1, GL_FALSE, glm::value_ptr(vp*model));
 
