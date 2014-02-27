@@ -54,7 +54,7 @@ int main(int argc, char * argv[])
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 32;
     OculusWindow window(sf::VideoMode(width, height), "Oculus window for SFML", sf::Style::Close, contextSettings);
-    sf::RenderWindow & app = window.getApplication();
+    sf::Window & app = window.getApplication();
     sf::RenderTarget & target = window.getRenderTarget();
 
     sf::Clock clock;
