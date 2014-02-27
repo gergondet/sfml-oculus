@@ -75,6 +75,9 @@ ENDIF(WIN32)
 ADD_EXECUTABLE(${PROJECT_NAME}-example ${${PROJECT_NAME}_EXAMPLE_SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}-example ${PROJECT_NAME})
 
+ADD_EXECUTABLE(test-sfmlscreen test/test-sfmlscreen.cpp)
+TARGET_LINK_LIBRARIES(test-sfmlscreen ${PROJECT_NAME})
+
 SET(BG
 ${CMAKE_SOURCE_DIR}/bg/background.png
 )
