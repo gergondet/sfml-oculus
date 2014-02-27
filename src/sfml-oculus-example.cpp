@@ -3,10 +3,10 @@
 #include <iostream>
 #include <sstream>
 
+#include "PLYMesh.h"
 #include "OculusWindow.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "PLYMesh.h"
 
 #include <OVR.h>
 
