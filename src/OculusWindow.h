@@ -5,8 +5,11 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
+#ifndef WIN32
 #define GL_GLEXT_PROTOTYPES
+#else
 #include <GL/glew.h>
+#endif
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
