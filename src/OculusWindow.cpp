@@ -140,9 +140,9 @@ public:
     float width; float height;
     OVRWrapper oculus;
     float renderWidth; float renderHeight; float sfmlScreenHeight;
+    SFMLScreen screen;
     PostProcessing postproc_left;
     PostProcessing postproc_right;
-    SFMLScreen screen;
     glm::mat4 view;
     std::vector< boost::function<void (glm::mat4 & vp)> > gl_calls;
 };

@@ -1,4 +1,3 @@
-#define SFML_STATIC
 #include "../src/SFMLScreen.h"
 #include <iostream>
 #include <glm/glm.hpp>

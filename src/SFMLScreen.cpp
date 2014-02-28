@@ -10,6 +10,10 @@ SFMLScreen::SFMLScreen()
   model(glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1.4))),
   width(0), height(0), wwidth(0), wheight(0)
 {
+    #ifdef WIN32
+    glewExperimental = GL_TRUE;
+    int err = glewInit();
+    #endif
 }
 
 void SFMLScreen::init(float w, float h, float ww, float wh)
