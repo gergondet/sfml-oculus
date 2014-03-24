@@ -168,6 +168,7 @@ void OculusWindow::disableFPSCounter()
 
 void OculusWindow::display()
 {
+    impl->screen.resetGLStates();
     impl->screen.drawLimits();
     impl->screen.display();
 
