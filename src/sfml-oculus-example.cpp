@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstring>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #include "PLYMesh.h"
@@ -74,6 +75,13 @@ int main(int argc, char * argv[])
     text.setCharacterSize(40);
     text.setColor(sf::Color::Red);
 
+    sf::Text yprText;
+    yprText.setString("Y: 0.0, P: 0.0, R: 0.0");
+    yprText.setFont(font);
+    yprText.setPosition(320*window.getRenderScale(), 480*window.getRenderScale() - 150);
+    yprText.setCharacterSize(40);
+    yprText.setColor(sf::Color::Red);
+
     sf::Texture bgTexture; bgTexture.loadFromFile("bg/background.png");
     sf::Sprite bgSprite(bgTexture);
     bgSprite.setScale(window.getRenderScale(), window.getRenderScale());
@@ -121,6 +129,12 @@ int main(int argc, char * argv[])
 
         /* Get HMD orientation */
         Eigen::Vector3d hmdOrientation = window.GetHMDOrientation();
+        {
+            std::stringstream ss;
+            ss << std::setprecision(3) << "Y: " << hmdOrientation(0) << ", P: " << hmdOrientation(1) << ", R: " << hmdOrientation(2);
+            yprText.setString(ss.str());
+            yprText.setPosition(320*window.getRenderScale() - yprText.getGlobalBounds().width/2, 480*window.getRenderScale() - 150);
+        }
 
         /* Draw stuff to the SFML inner-screen */
         /* SFML drawings from here */
@@ -138,6 +152,7 @@ int main(int argc, char * argv[])
         center.setFillColor(sf::Color(255,0,0,255));
         target.draw(center);
         target.draw(text);
+        target.draw(yprText);
         /* End of SFML drawings */
 
         static double angle = 0;
