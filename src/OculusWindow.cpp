@@ -168,6 +168,7 @@ void OculusWindow::disableFPSCounter()
 
 void OculusWindow::display()
 {
+    impl->screen.drawLimits();
     impl->screen.display();
 
     glEnable(GL_DEPTH_TEST);
@@ -231,4 +232,9 @@ void OculusWindow::clearGLcallbacks()
 Eigen::Vector3d OculusWindow::GetHMDOrientation()
 {
     return impl->oculus.GetHMDOrientation();
+}
+
+void OculusWindow::setHeadLimitsBorders(bool top, bool left, bool bottom, bool right)
+{
+    impl->screen.setHeadLimitsBorders(top, left, bottom, right);
 }

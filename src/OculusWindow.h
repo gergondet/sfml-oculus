@@ -50,6 +50,8 @@ public:
     SFML_OCULUS_API void enableFPSCounter(const sf::Font & font);
 
     SFML_OCULUS_API void disableFPSCounter();
+
+    SFML_OCULUS_API void setHeadLimitsBorders(bool top, bool left, bool bottom, bool right);
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };

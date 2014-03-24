@@ -8,7 +8,8 @@ namespace bfs = boost::filesystem;
 SFMLScreen::SFMLScreen()
 : sf::RenderTexture(),
   model(glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1.4))),
-  width(0), height(0), wwidth(0), wheight(0)
+  width(0), height(0), wwidth(0), wheight(0),
+  top_limit(), left_limit(), bottom_limit(), right_limit()
 {
     #ifdef WIN32
     glewExperimental = GL_TRUE;
@@ -87,6 +88,19 @@ void SFMLScreen::init(float w, float h, float ww, float wh)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_elements);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    top_limit.setSize(sf::Vector2f(width, 15));
+    top_limit.setFillColor(sf::Color::Red);
+    top_limit.setPosition(0, 0);
+    left_limit.setSize(sf::Vector2f(15, height));
+    left_limit.setFillColor(sf::Color::Red);
+    left_limit.setPosition(0, 0);
+    bottom_limit.setSize(sf::Vector2f(width, 15));
+    bottom_limit.setFillColor(sf::Color::Red);
+    bottom_limit.setPosition(0, height - 15);
+    right_limit.setSize(sf::Vector2f(15, height));
+    right_limit.setFillColor(sf::Color::Red);
+    right_limit.setPosition(width - 15, 0);
 }
 
 void SFMLScreen::render(glm::mat4 & vp)
@@ -116,4 +130,20 @@ void SFMLScreen::render(glm::mat4 & vp)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glDisableVertexAttribArray(0);
     sf::Shader::bind(0);
+}
+
+void SFMLScreen::setHeadLimitsBorders(bool top, bool left, bool bottom, bool right)
+{
+    top_limit.show = top;
+    left_limit.show = left;
+    bottom_limit.show = bottom;
+    right_limit.show = right;
+}
+
+void SFMLScreen::drawLimits()
+{
+    if(top_limit.show) { (*this).draw(top_limit); }
+    if(left_limit.show) { (*this).draw(left_limit); }
+    if(bottom_limit.show) { (*this).draw(bottom_limit); }
+    if(right_limit.show) { (*this).draw(right_limit); }
 }

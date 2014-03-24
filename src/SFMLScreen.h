@@ -36,6 +36,10 @@ public:
     SFML_OCULUS_API const glm::mat4 & getModel() { return model; }
 
     SFML_OCULUS_API void setModel(const glm::mat4 & m) { model = m; }
+
+    SFML_OCULUS_API void setHeadLimitsBorders(bool top, bool left, bool bottom, bool right);
+
+    SFML_OCULUS_API void drawLimits();
 private:
     glm::mat4 model;
 
@@ -53,6 +57,17 @@ private:
     GLint attribute_coord3d;
     GLint attribute_texcoord;
     GLint uniform_transform;
+
+    /* Graphical hints for head tracker limits */
+    struct LimitBorder : public sf::RectangleShape
+    {
+        LimitBorder() : sf::RectangleShape(), show(false) {}
+        bool show;
+    };
+    LimitBorder top_limit;
+    LimitBorder left_limit;
+    LimitBorder bottom_limit;
+    LimitBorder right_limit;
 };
 
 #endif
