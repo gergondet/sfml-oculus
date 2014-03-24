@@ -134,6 +134,9 @@ int main(int argc, char * argv[])
             ss << std::setprecision(3) << "Y: " << hmdOrientation(0) << ", P: " << hmdOrientation(1) << ", R: " << hmdOrientation(2);
             yprText.setString(ss.str());
             yprText.setPosition(320*window.getRenderScale() - yprText.getGlobalBounds().width/2, 480*window.getRenderScale() - 150);
+
+            double npan = hmdOrientation(0); double ntilt = -hmdOrientation(1);
+            window.setHeadLimitsBorders(ntilt < -0.7, npan > 0.7, ntilt > 0.7, npan < -0.7);
         }
 
         /* Draw stuff to the SFML inner-screen */
