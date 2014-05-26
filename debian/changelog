@@ -1,0 +1,5 @@
+libsfml-oculus (1.0.0-0trusty1) trusty; urgency=low
+
+  * Initial release
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Mon, 26 May 2014 10:41:55 +0900
