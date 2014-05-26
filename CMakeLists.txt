@@ -58,6 +58,12 @@ src/sfml-oculus-example.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_LIB_SRC})
+SET_TARGET_PROPERTIES(
+  ${PROJECT_NAME}
+  PROPERTIES
+    VERSION 1.0.0
+    SOVERSION 1
+)
 
 IF(WIN32)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} "${OCULUS_LIB};sfml-graphics.lib;sfml-window.lib;sfml-system.lib;glew32.lib;OpenGL32.lib;")
