@@ -1,3 +1,9 @@
+libsfml-oculus (1.0.0-0trusty2) trusty; urgency=low
+
+  * Fix dependencies issue
+
+ -- Pierre Gergondet <pierre.gergondet+ppa@gmail.com>  Mon, 26 May 2014 17:17:18 +0900
+
 libsfml-oculus (1.0.0-0trusty1) trusty; urgency=low
 
   * Initial release

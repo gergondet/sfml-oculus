@@ -1,7 +1,7 @@
 Source: libsfml-oculus
 Priority: extra
 Maintainer: Pierre Gergondet <pierre.gergondet+ppa@gmail.com>
-Build-Depends: debhelper (>= 8.0.0), cmake, liboculusvrsdk, libsfml-dev, libboost-filesystem-dev, libeigen3-dev, libglm-dev, libudev-dev, libxinerama-dev
+Build-Depends: debhelper (>= 8.0.0), cmake, liboculusvrsdk, libsfml-dev, libboost-filesystem-dev, libeigen3-dev, libglm-dev, libudev-dev, libxinerama-dev, libxrandr-dev
 Standards-Version: 3.9.4
 Section: libs
 Homepage: https://github.com/gergondet/sfml-oculus
@@ -11,7 +11,7 @@ Homepage: https://github.com/gergondet/sfml-oculus
 Package: libsfml-oculus-dev
 Section: libdevel
 Architecture: any
-Depends: libsfml-oculus1 (= ${binary:Version}), ${misc:Depends}
+Depends: libsfml-oculus1 (= ${binary:Version}), ${misc:Depends}, libsfml-dev, libeigen3-dev, libglm-dev, libboost-filesystem-dev, liboculusvrsdk
 Description: Oculus integration with SFML (development files)
  This package provides a library (libsfml-oculus) to use SFML inside an Oculus
  RIFT. A simple example is also provided.
@@ -26,7 +26,7 @@ Description: Oculus integration with SFML (development files)
 Package: libsfml-oculus1
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, liboculusvrsdk
 Description: Oculus integration with SFML 
  This package provides a library (libsfml-oculus) to use SFML inside an Oculus
  RIFT. A simple example is also provided.
