@@ -3,7 +3,18 @@
 
 /* Utility class to wrap OVR call */
 
-#include <OVR.h>
+#ifdef WIN32
+  #ifndef OVR_OS_WIN32
+  #define OVR_OS_WIN32
+  #endif
+#else
+  #ifndef OVR_OS_LINUX
+  #define OVR_OS_LINUX
+  #endif
+#endif
+
+#include <OVR_CAPI_GL.h>
+#include <Kernel/OVR_Math.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,36 +24,48 @@
 
 #include <boost/noncopyable.hpp>
 
+#include "OVRRenderTexture.h"
+
 class OVRWrapper : public boost::noncopyable
 {
 public:
-    OVRWrapper(float width, float height, bool enable_scaling = true);
+  OVRWrapper();
 
-    ~OVRWrapper();
+  ~OVRWrapper();
 
-    /* This function will set the current eye to Center/Left/Right respectively
-     * and change the viewport accordingly */
-    void setEye(OVR::Util::Render::StereoEye eye);
+  void Init();
 
-    glm::mat4 getViewAdjust();
+  bool IsDebug();
 
-    glm::mat4 getProjection();
+  glm::mat4 BeginRendering(int eyeIndex);
 
-    const OVR::Util::Render::DistortionConfig * getDistortionConfig() { return currentEye.pDistortion; }
+  void EndRendering(int eyeIndex);
 
-    float getRenderScale() { return renderScale; }
+  glm::vec2 GetResolution();
 
-    /* Returns the YPR values of head orientation */
-    Eigen::Vector3d GetHMDOrientation();
+  float GetRenderScale();
+
+  /* Returns the YPR values of head orientation */
+  Eigen::Vector3d GetHMDOrientation();
 private:
-    OVR::DeviceManager * manager;
-    OVR::HMDDevice * hmd;
-    OVR::HMDInfo hmdInfo;
-    OVR::SensorDevice * sensor;
-    OVR::SensorFusion * sfusion;
-    OVR::Util::Render::StereoConfig sConfig;
-    OVR::Util::Render::StereoEyeParams currentEye;
-    float renderScale;
+  ovrHmd hmd;
+  bool hmd_debug;
+
+  ovrSizei resolution;
+  ovrSizei leftTextureSize;
+  ovrSizei rightTextureSize;
+  float renderScale;
+
+  ovrFovPort eyeFov[2];
+  ovrEyeRenderDesc eyeRenderDesc[2];
+  ovrRecti eyeRenderViewport[2];
+
+  OVRRenderTexture * rt[2];
+
+  ovrGLConfig cfg;
+  ovrGLTexture eyeTexture[2];
+
+  ovrPosef headPose[2];
 };
 
 #endif

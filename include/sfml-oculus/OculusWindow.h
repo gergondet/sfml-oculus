@@ -25,7 +25,7 @@ struct OculusWindowImpl;
 class OculusWindow : public boost::noncopyable
 {
 public:
-    SFML_OCULUS_API OculusWindow(sf::VideoMode mode, const sf::String& title, sf::Uint32 style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
+    SFML_OCULUS_API OculusWindow(const sf::String& title);
 
     SFML_OCULUS_API ~OculusWindow();
 
@@ -46,10 +46,6 @@ public:
     SFML_OCULUS_API void addGLcallback(const boost::function<void (glm::mat4 & vp)> & fn);
 
     SFML_OCULUS_API void clearGLcallbacks();
-
-    SFML_OCULUS_API void enableFPSCounter(const sf::Font & font);
-
-    SFML_OCULUS_API void disableFPSCounter();
 
     SFML_OCULUS_API void setHeadLimitsBorders(bool top, bool left, bool bottom, bool right);
 protected:

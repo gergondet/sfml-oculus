@@ -1,8 +1,4 @@
-#ifdef GL_ES_VERSION_2_0
-#version 100  // OpenGL ES 2.0
-#else
 #version 120  // OpenGL 2.1
-#endif
 uniform mat4 transform;
 attribute vec3 coord3d;
 varying vec4 vertex;

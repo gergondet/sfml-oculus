@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
 {
     sf::ContextSettings contextSettings; contextSettings.depthBits = 32;
     sf::RenderWindow window(sf::VideoMode(640, 480), "Test SFMLScreen", sf::Style::Close, contextSettings);
-   
+
     SFMLScreen screen;
     screen.init(640, 480, 640, 480);
 
@@ -37,7 +37,7 @@ int main(int argc, char * argv[])
     text.setColor(sf::Color::Red);
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 projection = glm::perspective(90.0f, 1.0f, 0.1f, 10.0f);
+    glm::mat4 projection = glm::perspective(static_cast<float>(M_PI/2), 1.0f, 0.1f, 10.0f);
     glm::mat4 vp = projection*view;
 
 

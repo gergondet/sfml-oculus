@@ -7,7 +7,7 @@ namespace bfs = boost::filesystem;
 
 SFMLScreen::SFMLScreen()
 : sf::RenderTexture(),
-  model(glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1.4))),
+  model(glm::translate(glm::mat4(1.0f), glm::vec3(0,0,-1))),
   width(0), height(0), wwidth(0), wheight(0),
   top_limit(), left_limit(), bottom_limit(), right_limit()
 {
