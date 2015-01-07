@@ -10,7 +10,33 @@ namespace bfs = boost::filesystem;
 PLYMesh::PLYMesh()
 : vertices(0), normals(0), faces(0), triangle_faces(0), quad_faces(0), textures(0), passes(0)
 {
-    shader.loadFromFile("shaders/ply_shader.vert", "shaders/ply_shader.frag");
+  std::string vert_shader = """uniform mat4 transform;\
+                               attribute vec3 coord3d;\
+                               varying vec4 vertex;\
+                               void main(void)\
+                               {\
+                                 gl_Position = transform*vec4(coord3d[0], coord3d[1], coord3d[2], 1.0);\
+                                 vertex = vec4(coord3d, 1.0);\
+                               }""";
+  std::string frag_shader = """varying vec4 vertex;\
+                               uniform float Scale;\
+                               uniform sampler2D texture;\
+                               uniform mat4 modelviewprojection;\
+                               uniform float x;\
+                               uniform float y;\
+                               uniform float w;\
+                               uniform float h;\
+                               void main(){\
+                                   vec4 texcoords;\
+                                   texcoords = modelviewprojection * vertex;\
+                                   texcoords.x = (texcoords.x / texcoords.w + 1.0) * 0.5;\
+                                   texcoords.y = (texcoords.y / texcoords.w + 1.0) * 0.5;\
+                                   texcoords.x = (texcoords.x-x)/w;\
+                                   texcoords.y = (texcoords.y-y)/h;\
+                                   vec2 tc = texcoords.xy;\
+                                   gl_FragColor =  texture2D(texture, tc);\
+                               }""";
+    shader.loadFromMemory(vert_shader, frag_shader);
 }
 
 void PLYMesh::loadFromFile(const std::string & ply_model)
@@ -199,9 +225,6 @@ void PLYMesh::render(glm::mat4 & vp)
     }
     else
     {
-        GLint uniform_useTexture = glGetUniformLocation(program, "useTexture");
-        glUniform1i(uniform_useTexture, 1);
-
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_faces);
 
         for(size_t i = 0; i < passes.size(); ++i)

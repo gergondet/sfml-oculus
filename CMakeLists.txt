@@ -99,11 +99,6 @@ ${CMAKE_SOURCE_DIR}/models/can-00006.jpg
 ${CMAKE_SOURCE_DIR}/models/can.ply
 )
 
-SET(SHADERS
-${CMAKE_SOURCE_DIR}/shaders/ply_shader.frag
-${CMAKE_SOURCE_DIR}/shaders/ply_shader.vert
-)
-
 FILE(COPY ${BG} DESTINATION ${CMAKE_BINARY_DIR}/bg)
 FILE(COPY ${FONTS} DESTINATION ${CMAKE_BINARY_DIR}/fonts)
 FILE(COPY ${MODELS} DESTINATION ${CMAKE_BINARY_DIR}/models)
