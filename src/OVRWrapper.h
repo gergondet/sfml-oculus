@@ -13,8 +13,14 @@
   #endif
 #endif
 
+/* Disable some warnings when including OVR API */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wpedantic"
 #include <OVR_CAPI_GL.h>
 #include <Kernel/OVR_Math.h>
+#pragma GCC diagnostic pop
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

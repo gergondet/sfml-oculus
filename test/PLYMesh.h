@@ -29,7 +29,7 @@ class PLYMesh : public boost::noncopyable
     struct face
     {
         std::vector<GLushort> v;
-        int offset;
+        uint64_t offset;
     };
 public:
     PLYMesh();

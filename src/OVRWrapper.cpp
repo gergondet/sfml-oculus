@@ -65,8 +65,8 @@ OVRWrapper::~OVRWrapper()
 
 void OVRWrapper::Init()
 {
-  rt[0] = new OVRRenderTexture(leftTextureSize.w, leftTextureSize.h);
-  rt[1] = new OVRRenderTexture(rightTextureSize.w, rightTextureSize.h);
+  rt[0] = new OVRRenderTexture( static_cast<float>(leftTextureSize.w),  static_cast<float>(leftTextureSize.h)  );
+  rt[1] = new OVRRenderTexture( static_cast<float>(rightTextureSize.w), static_cast<float>(rightTextureSize.h) );
 
   cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
   #ifndef WIN32
@@ -144,7 +144,7 @@ glm::mat4 OVRWrapper::BeginRendering(int eyeIndex)
   {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
-    ovrFrameTiming hmdFrameTiming = ovrHmd_BeginFrame(hmd, 0);
+    /*ovrFrameTiming hmdFrameTiming = */ovrHmd_BeginFrame(hmd, 0);
   }
   rt[eyeIndex]->beginRendering();
 
@@ -157,11 +157,11 @@ glm::mat4 OVRWrapper::BeginRendering(int eyeIndex)
   //for(size_t i = 0; i < 4; ++i) { for(size_t j = 0; j < 4; ++j) { orientation[i][j] = ori.M[i][j]; } }
   OVR::Matrix4f proj = ovrMatrix4f_Projection(eyeRenderDesc[eye].Fov, 0.01f, 10000.0f, true);
   glm::mat4 projection = glm::mat4(1.0);
-  for(size_t i = 0; i < 4; ++i) { for(size_t j = 0; j < 4; ++j) { projection[i][j] = proj.M[j][i]; } }
+  for(int i = 0; i < 4; ++i) { for(int j = 0; j < 4; ++j) { projection[i][j] = proj.M[j][i]; } }
 
   OVR::Matrix4f va = OVR::Matrix4f::Translation(eyeRenderDesc[eye].HmdToEyeViewOffset);
   glm::mat4 viewAdjust = glm::mat4(1.0);
-  for(size_t i = 0; i < 4; ++i) { for(size_t j = 0; j < 4; ++j) { viewAdjust[i][j] = va.M[i][j]; } }
+  for(int i = 0; i < 4; ++i) { for(int j = 0; j < 4; ++j) { viewAdjust[i][j] = va.M[i][j]; } }
 
   return projection*viewAdjust;//*orientation;
 }

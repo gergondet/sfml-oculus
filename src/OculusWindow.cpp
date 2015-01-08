@@ -20,11 +20,11 @@ struct OculusWindowImpl
 public:
     OculusWindowImpl(const sf::String& title)
     : hmd(),
-      width(hmd.GetResolution().x), height(hmd.GetResolution().y),
+      width(static_cast<unsigned int>(hmd.GetResolution().x)), height(static_cast<unsigned int>(hmd.GetResolution().y)),
       contextSettings(24),
       window(sf::VideoMode(width, height), title, sf::Style::None, contextSettings),
       sWidth( (hmd.IsDebug() ? hmd.GetResolution().x : hmd.GetResolution().y)*hmd.GetRenderScale()/2 ),
-      sHeight( ceil(480.0f*sWidth/640.0f) ),
+      sHeight( ceilf(480.0f*sWidth/640.0f) ),
       screen(),
       view(glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0))),
       gl_calls(0)
@@ -71,7 +71,7 @@ void OculusWindow::display()
     impl->window.setActive();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-    for(size_t i = 0; i < 2; ++i)
+    for(int i = 0; i < 2; ++i)
     {
       impl->window.setActive();
       glm::mat4 pv = impl->hmd.BeginRendering(i) * impl->view;

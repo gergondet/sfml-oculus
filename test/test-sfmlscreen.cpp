@@ -15,7 +15,7 @@ inline std::ostream & operator<<(std::ostream & os, const glm::mat4 & m)
     return os;
 }
 
-int main(int argc, char * argv[])
+int main(int, char **)
 {
     sf::ContextSettings contextSettings; contextSettings.depthBits = 32;
     sf::RenderWindow window(sf::VideoMode(640, 480), "Test SFMLScreen", sf::Style::Close, contextSettings);

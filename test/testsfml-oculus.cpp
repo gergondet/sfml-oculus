@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-int main(int argc, char * argv[])
+int main(int, char **)
 {
   OculusWindow window("Test Oculus SDK2");
   sf::Window & app = window.getApplication();
@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 
     static double angle = 0;
     glm::mat4 anim_box = glm::rotate(glm::mat4(1.0f), (float)M_PI/2, glm::vec3(0, 1, 0));
-    angle += 2*anim_clock.getElapsedTime().asMicroseconds()/1e6;
+    angle += 2*static_cast<double>(anim_clock.getElapsedTime().asMicroseconds())/1e6;
     anim_clock.restart();
     glm::mat4 model_box = glm::translate(glm::mat4(1.0f), glm::vec3(0., 0.5, 0.25 + sin(angle)/2));
     box.setModel(model_box*anim_box);
@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
     target.clear();
     target.draw(bgSprite);
     sf::RectangleShape center(sf::Vector2f(10,10));
-    center.setPosition(target.getSize().x/2, target.getSize().y/2),
+    center.setPosition(static_cast<float>(target.getSize().x)/2.0f, static_cast<float>(target.getSize().y)/2.0f),
     center.setFillColor(sf::Color(255,0,0,255));
     target.draw(center);
 

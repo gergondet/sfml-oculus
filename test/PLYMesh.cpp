@@ -93,7 +93,7 @@ void PLYMesh::loadFromFile(const std::string & ply_model)
         vertices.push_back(vertex);
         normals.push_back(normal);
     }
-    int offset = 0;
+    int64_t offset = 0;
     for(unsigned int i = 0; i < face_count; ++i)
     {
         getline(in, line);
@@ -165,7 +165,7 @@ void PLYMesh::loadFromFile(const std::string & ply_model)
         glGenBuffers(1, &ibo_faces);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_faces);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, (triangle_faces.size() + quad_faces.size())*sizeof(GLushort), NULL, GL_STATIC_DRAW);
-        int offset = 0;
+        int64_t offset = 0;
         for(size_t i = 0; i < faces.size(); ++i)
         {
             glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, faces[i].v.size()*sizeof(GLushort), faces[i].v.data());
@@ -213,14 +213,14 @@ void PLYMesh::render(glm::mat4 & vp)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_triangles);
             int size; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-            glDrawElements(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+            glDrawElements(GL_TRIANGLES, size/static_cast<int>(sizeof(GLushort)), GL_UNSIGNED_SHORT, 0);
         }
 
         if(quad_faces.size())
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_quads);
             int size; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-            glDrawElements(GL_QUADS, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+            glDrawElements(GL_QUADS, size/static_cast<int>(sizeof(GLushort)), GL_UNSIGNED_SHORT, 0);
         }
     }
     else
