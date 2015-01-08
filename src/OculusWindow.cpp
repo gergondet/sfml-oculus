@@ -134,3 +134,8 @@ void OculusWindow::setHeadLimitsBorders(bool top, bool left, bool bottom, bool r
 {
     impl->screen.setHeadLimitsBorders(top, left, bottom, right);
 }
+
+glm::vec2 OculusWindow::getResolution()
+{
+  return impl->hmd.GetResolution();
+}

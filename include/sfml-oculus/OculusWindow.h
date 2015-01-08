@@ -48,6 +48,8 @@ public:
     SFML_OCULUS_API void clearGLcallbacks();
 
     SFML_OCULUS_API void setHeadLimitsBorders(bool top, bool left, bool bottom, bool right);
+
+    SFML_OCULUS_API glm::vec2 getResolution();
 protected:
     boost::shared_ptr<OculusWindowImpl> impl;
 };
