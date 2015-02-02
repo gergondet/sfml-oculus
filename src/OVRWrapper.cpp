@@ -42,6 +42,8 @@ OVRWrapper::OVRWrapper()
 
     eyeFov[0] = hmd->DefaultEyeFov[0];
     eyeFov[1] = hmd->DefaultEyeFov[1];
+
+    ovrHmd_RecenterPose(hmd);
   }
 }
 
@@ -107,9 +109,6 @@ void OVRWrapper::Init()
   bool configured = ovrHmd_ConfigureRendering(hmd, &cfg.Config,
                       distortionCaps,
                       eyeFov, eyeRenderDesc);
-  ovrHmd_SetEnabledCaps(hmd, ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction);
-
-  ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
   if(configured)
   {
     std::cout << "HMD renderer configured" << std::endl;
@@ -117,6 +116,17 @@ void OVRWrapper::Init()
   else
   {
     std::cout << "HMD renderer failed to configure" << std::endl;
+  }
+  ovrHmd_SetEnabledCaps(hmd, ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction);
+
+  configured = ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
+  if(configured)
+  {
+    std::cout << "HMD tracking configured" << std::endl;
+  }
+  else
+  {
+    std::cout << "HMD tracking failed to configure" << std::endl;
   }
 
 
@@ -208,5 +218,13 @@ float OVRWrapper::GetRenderScale()
 Eigen::Vector3d OVRWrapper::GetHMDOrientation()
 {
   Eigen::Vector3d res;
+  ovrTrackingState ts = ovrHmd_GetTrackingState(hmd, ovr_GetTimeInSeconds());
+  if(ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
+  {
+    OVR::Posef pose = ts.HeadPose.ThePose;
+    float yaw; float pitch; float roll;
+    pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
+    res(0) = yaw; res(1) = pitch; res(2) = roll;
+  }
   return res;
 }

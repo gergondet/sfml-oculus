@@ -5,6 +5,7 @@
 #include <boost/bind.hpp>
 
 #include <iostream>
+#include <iomanip>
 
 int main(int, char **)
 {
@@ -25,6 +26,12 @@ int main(int, char **)
 
   sf::Font font;
   font.loadFromFile("fonts/arial.ttf");
+  sf::Text yprText;
+  yprText.setString("Y: 0.0, P: 0.0, R: 0.0");
+  yprText.setFont(font);
+  yprText.setPosition(target.getSize().x/2, target.getSize().y*0.75f);
+  yprText.setCharacterSize(40);
+  yprText.setColor(sf::Color::Red);
 
   window.setHeadLimitsBorders(true, true, true, true);
 
@@ -71,6 +78,19 @@ int main(int, char **)
     center.setPosition(static_cast<float>(target.getSize().x)/2.0f, static_cast<float>(target.getSize().y)/2.0f),
     center.setFillColor(sf::Color(255,0,0,255));
     target.draw(center);
+
+    /* Get HMD orientation */
+    Eigen::Vector3d hmdOrientation = window.GetHMDOrientation();
+    {
+      std::stringstream ss;
+      ss << std::setprecision(3) << "Y: " << hmdOrientation(0) << ", P: " << hmdOrientation(1) << ", R: " << hmdOrientation(2);
+      yprText.setString(ss.str());
+      yprText.setPosition(target.getSize().x/2 - yprText.getGlobalBounds().width/2, target.getSize().y*0.75f);
+      double npan = hmdOrientation(0); double ntilt = -hmdOrientation(1);
+      window.setHeadLimitsBorders(ntilt < -0.7, npan > 0.7, ntilt > 0.7, npan < -0.7);
+    }
+    target.draw(yprText);
+
 
     window.display();
   }
