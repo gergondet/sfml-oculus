@@ -99,7 +99,7 @@ void OVRWrapper::Init()
   //{
   //  std::cout << "HMD renderer not attached to window (may be normal)" << std::endl;
   //}
-  unsigned int distortionCaps = ovrDistortionCap_Chromatic | ovrDistortionCap_Vignette | ovrDistortionCap_TimeWarp | ovrDistortionCap_Overdrive;
+  unsigned int distortionCaps = ovrDistortionCap_Vignette | ovrDistortionCap_TimeWarp | ovrDistortionCap_Overdrive;
   #ifndef WIN32
   if(!hmd_debug)
   {
