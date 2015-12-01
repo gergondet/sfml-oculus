@@ -55,7 +55,7 @@ IF(WIN32)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} "${OCULUS_LIB};sfml-graphics.lib;sfml-window.lib;sfml-system.lib;glew32.lib;OpenGL32.lib;")
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} "winmm")
 ELSE(WIN32)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ${OCULUS_LIB} sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} udev Xinerama ${OCULUS_LIB} sfml-graphics sfml-window sfml-system GL boost_filesystem pthread boost_system X11 Xrandr)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src)
