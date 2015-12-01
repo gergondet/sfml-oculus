@@ -53,6 +53,7 @@ public:
 OculusWindow::OculusWindow(const sf::String& title)
 : impl(new OculusWindowImpl(title))
 {
+  impl->window.setPosition({1920,0});
 }
 
 OculusWindow::~OculusWindow()
