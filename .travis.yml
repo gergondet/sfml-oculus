@@ -2,7 +2,7 @@ language: cpp
 compiler: gcc
 env:
   global:
-  - APT_DEPENDENCIES="libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev doxygen doxygen-latex libltdl-dev libboost-all-dev liblog4cxx10-dev freeglut3-dev libglm-dev libxxf86vm-dev libudev-dev libxinerama-dev libeigen3-dev libx11-xcb-dev libxcb-image0-dev libxcb-randr0-dev"
+  - APT_DEPENDENCIES="libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev doxygen doxygen-latex libltdl-dev libboost1.55-all-dev liblog4cxx10-dev freeglut3-dev libglm-dev libxxf86vm-dev libudev-dev libxinerama-dev libeigen3-dev libx11-xcb-dev libxcb-image0-dev libxcb-randr0-dev"
   - GIT_DEPENDENCIES="LaurentGomila/SFML gergondet/OculusSDK"
   - MASTER_PPA="boost-latest/ppa"
 notifications:
