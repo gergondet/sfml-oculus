@@ -1,8 +1,13 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <sfml-oculus/OculusWindow.h>
 
 #include "PLYMesh.h"
 #include <SFML/Graphics.hpp>
 #include <boost/bind.hpp>
+
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <iomanip>

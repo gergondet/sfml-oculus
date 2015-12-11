@@ -7,6 +7,8 @@
 
 #ifndef WIN32
 #define GL_GLEXT_PROTOTYPES
+#else
+#include <GL/glew.h>
 #endif
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>

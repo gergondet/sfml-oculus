@@ -90,15 +90,6 @@ void OVRWrapper::Init()
   #else
   cfg.OGL.Disp = 0;
   #endif
-  //bool attached = ovrHmd_AttachToWindow(hmd, 0, 0, 0);
-  //if(attached)
-  //{
-  //  std::cout << "HMD renderer attached to window" << std::endl;
-  //}
-  //else
-  //{
-  //  std::cout << "HMD renderer not attached to window (may be normal)" << std::endl;
-  //}
   unsigned int distortionCaps = ovrDistortionCap_Vignette | ovrDistortionCap_TimeWarp | ovrDistortionCap_Overdrive;
   #ifndef WIN32
   if(!hmd_debug)
@@ -118,6 +109,15 @@ void OVRWrapper::Init()
     std::cout << "HMD renderer failed to configure" << std::endl;
   }
   ovrHmd_SetEnabledCaps(hmd, ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction);
+  bool attached = ovrHmd_AttachToWindow(hmd, 0, 0, 0);
+  if (attached)
+  {
+    std::cout << "HMD renderer attached to window" << std::endl;
+  }
+  else
+  {
+    std::cout << "HMD renderer not attached to window (may be normal)" << std::endl;
+  }
 
   configured = ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
   if(configured)
@@ -190,7 +190,7 @@ bool OVRWrapper::IsDebug()
 #ifndef WIN32
   return hmd_debug;
 #else
-  return false;
+  return true;
 #endif
 }
 

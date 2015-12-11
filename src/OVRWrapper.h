@@ -7,6 +7,7 @@
   #ifndef OVR_OS_WIN32
   #define OVR_OS_WIN32
   #endif
+  #include <GL/glew.h>
 #else
   #ifndef OVR_OS_LINUX
   #define OVR_OS_LINUX
